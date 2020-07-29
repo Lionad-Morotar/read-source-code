@@ -4,8 +4,6 @@ const parser = require("@babel/parser")
 const traverse = require('@babel/traverse').default
 const babel = require('@babel/core')
 
-const entry = './src/index.js'
-
 function getFileContent(entry) {
     return fs.readFileSync(path.join(__dirname, entry), 'utf-8')
 }
@@ -31,6 +29,8 @@ function parse(entry) {
         sourceType: "module"
     })
     res.resolves = resolveRelations(res)
+    // 解析结果中的 _interopRequireDefault 函数：
+    // 对没有 exports 的对象添加 exports 属性并指向自身
     res.parsedCode = babel.transformFromAst(res.ast, null, {
         presets: ["@babel/preset-env"]
     })
@@ -57,13 +57,23 @@ function parseGraph(entry) {
     return graph
 }
 
-function bundle(entry) {
+function chunk(entry) {
     console.clear()
     console.log('\n[Bundle]', new Date(), entry)
-
     const graph = parseGraph(entry)
-
-    console.log(graph)
+    return graph
 }
 
-bundle(entry)
+function webpack () {
+    const configFile = require('./config/webpack')
+    const entry = configFile.entry
+    const graph = chunk(entry)
+    const bundle = require('./wrapper')({ entry, graph })
+    
+    const outputDir = configFile.output || './dist'
+    const bundleName = 'bundle.js'
+    const output = path.join(outputDir, bundleName)
+    fs.writeFileSync(output, bundle)
+}
+
+webpack()

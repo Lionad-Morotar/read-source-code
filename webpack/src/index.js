@@ -1,5 +1,4 @@
-import person from './person'
+import person from './person.js'
+import message from './data/message.js'
 
-// const message = require('./message')
-
-person.say('hello world')
+person.say(message)
