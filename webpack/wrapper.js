@@ -13,7 +13,7 @@ module.exports = function wrap({ entry, graph }) {
         )
         return exports
     }
-    require(${entry})
+    require("${entry}")
 })(${JSON.stringify(graph)})`
 
     return wrapper
