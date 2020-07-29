@@ -2,71 +2,68 @@ const fs = require('fs')
 const path = require('path')
 const parser = require("@babel/parser")
 const traverse = require('@babel/traverse').default
+const babel = require('@babel/core')
 
-const entry = path.join(__dirname, './src/index.js')
+const entry = './src/index.js'
 
-function getFileContent({ entry: path }) {
-    // 自动后缀补充
-    const post = ['', '.js', 'json', '/.js', '/.json']
-    while (post.length) {
-        const postFix = post.shift()
-        let realPath = path + postFix
-        let res = null
-        try {
-            res = fs.readFileSync(realPath, 'utf-8')
-        } 
-        catch(error) {
-            /* do nothing and try next postFix */
-        }
-        finally {
-            if (res) return res
-        }
-    }
-    throw new Error('Error file path')
+function getFileContent(entry) {
+    return fs.readFileSync(path.join(__dirname, entry), 'utf-8')
 }
 
-function resolveRelations({ entry, code }) {
-    const ast = parser.parse(code, {
-        sourceType: "module"
-    })
+function resolveRelations({ entry, ast }) {
     const dependencies = {}
     traverse(ast, {
         ImportDeclaration({ node }){
             const requirePath = node.source.value
-            const newFile = path.join(path.dirname(entry), requirePath)
+            const newFile = './' + path.join(path.dirname(entry), requirePath)
             dependencies[requirePath] = newFile
         }
     })
     return dependencies
 }
 
-// 解析文件内容，得到其依赖
+// 解析文件，得到其依赖
 function parse(entry) {
     const res = { entry }
-    res.code = getFileContent(res)
+    res.filename = path.join('./', entry.replace(path.dirname(entry), '')) || 'index.js'
+    res.rawCode = getFileContent(entry)
+    res.ast = parser.parse(res.rawCode, {
+        sourceType: "module"
+    })
     res.resolves = resolveRelations(res)
+    res.parsedCode = babel.transformFromAst(res.ast, null, {
+        presets: ["@babel/preset-env"]
+    })
     return res
 }
 
-// 解析文件内容，得到其依赖图
-function parseEntry(entry) {
+// 解析文件，得到其依赖图
+function parseGraph(entry) {
     const unResolve = [entry]
     const module = []
     while (unResolve.length) {
         const item = unResolve.shift()
-        const resolveRes = parse(item)
-        module.push(resolveRes)
-        Object.values(resolveRes.resolves).map(x => unResolve.push(x))
+        const parsed = parse(item)
+        module.push(parsed)
+        Object.values(parsed.resolves).map(x => unResolve.push(x))
     }
-    return module
+    const graph = {}
+    module.map(m => {
+        graph[m.entry] = {
+            code: m.parsedCode.code,
+            dependencies: m.resolves
+        }
+    })
+    return graph
 }
 
 function bundle(entry) {
+    console.clear()
     console.log('\n[Bundle]', new Date(), entry)
 
-    const module = parseEntry(entry)
+    const graph = parseGraph(entry)
 
-    console.log(module)
+    console.log(graph)
 }
 
 bundle(entry)
