@@ -32,8 +32,8 @@ function Gen(rawCode) {
     codes.splice(1, 1)
 
     return function (...datas) {
-        /* 模拟初始化传参 */
-        const decTemplate = i => `var ${args[i]} = "${datas[i]}"`
+        /* 模拟生成器初始化时的传参 */
+        const decTemplate = i => `var ${args[i]} = datas[${i}]`
         const fakeDeclaration = Array(datas.length).fill('')
             .map((x, i) => decTemplate(i))
             .join('\n')
@@ -62,7 +62,7 @@ let hello = Gen(
     yield 'world'
     yield data1
     yield data2
-}`)('DATA1', 'DATA2')
+}`)('DATA1', ['DATA2'])
 
 console.log('1：', hello.next())
 console.log('2：', hello.next())
