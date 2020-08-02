@@ -4,7 +4,8 @@
   "main": "",
   "scripts": {
     "webpack": "nodemon ./webpack/index.js",
-    "polyfill-promise": "nodemon ./polyfill/promise.js"
+    "polyfill-promise": "nodemon ./polyfill/promise.js",
+    "polyfill-generator": "nodemon ./polyfill/generator.js"
   },
   "author": "",
   "license": "MIT",
