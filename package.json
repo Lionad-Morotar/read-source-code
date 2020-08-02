@@ -5,7 +5,8 @@
   "scripts": {
     "webpack": "nodemon ./webpack/index.js",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
-    "polyfill-generator": "nodemon ./polyfill/generator.js"
+    "polyfill-generator": "nodemon ./polyfill/generator.js",
+    "polyfill-instanceof": "nodemon ./polyfill/instanceof.js"
   },
   "author": "",
   "license": "MIT",
