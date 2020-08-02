@@ -3,7 +3,8 @@
   "description": "hand write code",
   "main": "",
   "scripts": {
-    "webpack": "nodemon ./webpack/index.js"
+    "webpack": "nodemon ./webpack/index.js",
+    "polyfill-promise": "nodemon ./polyfill/promise.js"
   },
   "author": "",
   "license": "MIT",
