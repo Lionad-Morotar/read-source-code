@@ -4,6 +4,7 @@
   "main": "",
   "scripts": {
     "webpack": "nodemon ./webpack/index.js",
+    "ds-lru": "cross-env INPUT=./data-structure/lru.js rollup --config rollup.config.js -w",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
     "polyfill-instanceof": "nodemon ./polyfill/instanceof.js"
@@ -17,12 +18,17 @@
     "@babel/traverse": "^7.10.5"
   },
   "devDependencies": {
+    "@rollup/plugin-run": "^2.0.2",
+    "cross-env": "^7.0.2",
     "eslint": "^6.2.2",
     "eslint-config-standard": "latest",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "rollup": "^2.19.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
   }
 }
