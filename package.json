@@ -3,7 +3,7 @@
   "description": "hand write code",
   "main": "",
   "scripts": {
-    "webpack": "nodemon ./webpack/index.js",
+    "webpack": "nodemon ./module/webpack/index.js",
     "ds-lru": "cross-env INPUT=./data-structure/lru.js rollup --config rollup.config.js -w",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
