@@ -4,8 +4,8 @@
   "main": "",
   "scripts": {
     "module-webpack": "nodemon ./module/webpack/index.js",
-    "module-markdown": "cross-env SERVE=1 INPUT=./module/markdown-parser/index.js rollup --config rollup.config.js -w",
-    "ds-lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup --config rollup.config.js -w",
+    "module-markdown": "cross-env SERVE=1 INPUT=./module/markdown-parser/index.js rollup -c -w",
+    "ds-lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup -c -w",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
     "polyfill-instanceof": "nodemon ./polyfill/instanceof.js"
@@ -22,16 +22,22 @@
     "@rollup/plugin-run": "^2.0.2",
     "cross-env": "^7.0.2",
     "eslint": "^6.2.2",
+    "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "latest",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
+    "gulp": "^3.9.1",
+    "gulp-load-plugins": "^2.0.3",
+    "gulp-stylus": "^2.7.0",
+    "node-cmd": "^3.0.0",
     "prettier": "^2.0.5",
     "rollup": "^2.19.0",
+    "rollup-plugin-browsersync": "^1.1.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-copy": "^3.3.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-serve": "^1.0.3"
+    "rollup-plugin-generate-html-template": "^1.7.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
   }
 }

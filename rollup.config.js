@@ -1,4 +1,5 @@
 const path = require('path')
+const cmd = require('node-cmd')
 
 const shouldRun = !!process.env.RUN
 const openDevServer = !!process.env.serve
@@ -10,27 +11,33 @@ const outputDest = `${outputDir}${inputFileDir}`
 export default {
   input: inputPath,
   plugins: [
+    require('rollup-plugin-commonjs')(),
+    require('rollup-plugin-node-resolve')(),
+    require('rollup-plugin-generate-html-template')({
+      template: path.join(inputFileDir, '/index.html'),
+    }),
     require('rollup-plugin-copy')({
       targets: [{ src: inputFileDir + '/**/*', dest: outputDest }],
     }),
-    require('rollup-plugin-commonjs')(),
-    require('rollup-plugin-node-resolve')(),
+    {
+      name: 'run-gulp',
+      buildEnd: async () => {
+        return await new Promise(resolve => {
+          // Should change global node.exe path in gulp.ps1,
+          // because of rollup use NodeJS@14.4 and gulp@3 use NodeJS@8.15
+          cmd.get(`gulp --gulpfile ${inputFileDir}/gulpfile.js default`, async (error, data) => {
+            error ? console.error(error) : console.info(data)
+            resolve()
+          })
+        })
+      },
+    },
+    openDevServer && require('rollup-plugin-browsersync')({ server: outputDest }),
     shouldRun && require('@rollup/plugin-run')(),
-    openDevServer &&
-      require('rollup-plugin-serve')({
-        /** @see https://www.npmjs.com/package/rollup-plugin-serve */
-        verbose: false,
-        host: 'localhost',
-        port: 10001,
-        contentBase: outputDest,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      }),
   ],
   external: [/node_modules/],
   output: {
-    name: 'flowchart',
+    name: 'module',
     file: `${outputDir}${inputPath}`,
     format: 'umd',
     sourcemap: true,

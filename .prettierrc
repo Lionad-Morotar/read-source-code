@@ -2,6 +2,11 @@
   "singleQuote": true,
   "semi": false,
   "tabWidth": 2,
+  "endOfLine": "crlf",
   "useTabs": false,
-  "printWidth": 120
+  "printWidth": 120,
+  "arrowParens": "avoid",
+  "disableLanguages": ["html"],
+  "trailingComma": "es5",
+  "htmlWhitespaceSensitivity": "ignore"
 }
