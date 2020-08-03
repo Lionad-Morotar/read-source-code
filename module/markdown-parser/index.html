@@ -10,11 +10,44 @@
     <div id="content"></div>
   </body>
   <script>
-    const md = `# TEditor
+    var str = `# TEditor
 
-Hello，I'm TEditor~`
+Hello，I'm TEditor~
+
+\`\`\`js
+console.log("Enjoy yourself~")
+\`\`\`
+
+---
+
+## 基础功能
+
+* 解析标准可选（正在进行）
+* 自由的插件扩展（正在进行）
+* Inline-Style（计划中）
+* 主题自由（计划中）
+
+## 贡献代码
+
+1. 现在 \`Github.issues\` 中确认想要修改的代码有没有重复，最好提交一个 \`Issue\` 进行讨论；
+2. 点击页面右上角的 \`Fork\`，将本项目拷贝至你的仓库；
+3. 修改位于你仓库的代码；
+4. 一旦有修改，界面上有 \`Pull & Request\` 按钮，点击就行儿啦；
+
+## 阅读更多
+
+### 仿生狮子
+
+> **开源和玩耍**，是最重要的两件事儿啦~（~~其实睡觉也挺重要的...~~）
+> ——Lionad
+
+我是**仿生狮子**，欢迎来[我的博客](http://www.lionad.art)玩耍。额，其实，[Github](https://github.com/Lionad-Morotar) 也行儿...
+
+![作者](https://cdn.jsdelivr.net/gh/Lionad-Morotar/blog-cdn/image/avatar.gif)
+
+...`
     const parser = new module()
-    const parsed = parser.parse(md)
+    const parsed = parser.parse(str)
     document.querySelector('#content').innerHTML = parsed
   </script>
 </html>
