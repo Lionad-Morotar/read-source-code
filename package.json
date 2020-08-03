@@ -4,7 +4,7 @@
   "main": "",
   "scripts": {
     "module-webpack": "nodemon ./module/webpack/index.js",
-    "module-markdown": "cross-env INPUT=./module/markdown-parser/index.js rollup --config rollup.config.js -w",
+    "module-markdown": "cross-env SERVE=1 INPUT=./module/markdown-parser/index.js rollup --config rollup.config.js -w",
     "ds-lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup --config rollup.config.js -w",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
@@ -31,6 +31,7 @@
     "rollup": "^2.19.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-copy": "^3.3.0",
-    "rollup-plugin-node-resolve": "^5.2.0"
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-serve": "^1.0.3"
   }
 }
