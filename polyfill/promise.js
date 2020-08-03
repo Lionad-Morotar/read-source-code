@@ -20,7 +20,7 @@ function Promise(fns) {
     }
     function resolver(data) {
         fulfilled()
-        const microTimeout = process && process.nextTick || setImmediate || setTimeout
+        const microTimeout = process && process.nextTick || queueMicrotask || (cb => setTimeout(cb, 0))
         microTimeout(() => {
             promise.thenFns.reduce((h, c) => c(h), data)
         })
