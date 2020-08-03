@@ -41,7 +41,6 @@ const leverUpHandler = {
 
 /** 状态机 state machine */
 
-let lines = 1
 let flag = null
 let flagRec = []
 let lerverUp = false
@@ -50,7 +49,6 @@ let noTraillingSpace = false
 // let lastPoint = 0
 const F_SM = {
   INIT: () => {
-    lines = 1
     flag = null
     flagRec = []
     lerverUp = false
@@ -193,12 +191,6 @@ const R_SM = {
   },
 }
 
-/** parse
- *  读取字符串, 返回用于展示的HTML片段
- * @param {String} row 读取的字符串
- * @return {String} 用于展示的HTML片段
- */
-
 let char = ''
 const parseLine = line => {
   R_SM.NULL()
@@ -236,7 +228,6 @@ const handleCurChar = curChar => {
       F_SM.ACTIVE('blockquote')
       break
     case '\n':
-      lines++
       F_SM.NEW_LINE()
       break
     case ' ':
@@ -251,21 +242,26 @@ const handleCurChar = curChar => {
   }
 }
 
-const mdLRU = new LRU()
-
-export default function parse(raw) {
-  let parseLineCount = 0
-  const res = []
-  raw.split('\n').map(line => {
-    if (mdLRU.has(line)) {
-      res.push(mdLRU.get(line))
-    } else {
-      parseLine(line)
-      parseLineCount++
-      mdLRU.set(line, result)
-      res.push(result)
-    }
-  })
-  console.log(`mdLRU.nodeLength: ${mdLRU.nodeLength} \nrawLines: ${lines} \nparseLineCount: ${parseLineCount}`)
-  return res.join('\n')
+function createParser(mdLRU) {
+  return function parse(raw) {
+    const res = []
+    raw.split('\n').map(line => {
+      if (mdLRU.has(line)) {
+        res.push(mdLRU.get(line))
+      } else {
+        parseLine(line)
+        mdLRU.set(line, result)
+        res.push(result)
+      }
+    })
+    return res.join('\n')
+  }
 }
+
+function Parser() {
+  const lru = new LRU()
+  const parse = createParser(lru)
+  return { lru, parse }
+}
+
+export default Parser
