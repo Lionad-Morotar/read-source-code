@@ -1,5 +1,5 @@
-module.exports = function wrap({ entry, graph }) {
-    const wrapper = 
+module.exports = function wrap ({ entry, graph }) {
+  const wrapper =
 `!(function (graph) {
     function require(moduleName) {
         const module = graph[moduleName]
@@ -16,5 +16,5 @@ module.exports = function wrap({ entry, graph }) {
     require("${entry}")
 })(${JSON.stringify(graph)})`
 
-    return wrapper
+  return wrapper
 }

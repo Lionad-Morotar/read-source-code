@@ -1,4 +1,4 @@
 module.exports = {
-    entry: './src/index.js',
-    output: './dist'
+  entry: './src/index.js',
+  output: './dist'
 }

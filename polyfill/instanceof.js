@@ -1,17 +1,17 @@
-function _instanceof(left, right) {
-    const prototypeStored = right.prototype
-    while ((left = Object.getPrototypeOf(left))) {
-        if (left === prototypeStored) {
-            return true
-        }
+function _instanceof (left, right) {
+  const prototypeStored = right.prototype
+  while ((left = Object.getPrototypeOf(left))) {
+    if (left === prototypeStored) {
+      return true
     }
-    return false
+  }
+  return false
 }
 
-function God() {}
-function Person() {}
-function Programmer() {}
-function Duck() {}
+function God () {}
+function Person () {}
+function Programmer () {}
+function Duck () {}
 
 Programmer.prototype = new Person()
 Duck.prototype = new Programmer()
