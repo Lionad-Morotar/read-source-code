@@ -1,6 +1,7 @@
 const path = require('path')
 const cmd = require('node-cmd')
 
+const runGulp = !!process.env.GULP
 const shouldRun = !!process.env.RUN
 const openDevServer = !!process.env.serve
 const inputPath = process.env.INPUT
@@ -13,13 +14,13 @@ export default {
   plugins: [
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
-    require('rollup-plugin-generate-html-template')({
-      template: path.join(inputFileDir, '/index.html'),
-    }),
+    // require('rollup-plugin-generate-html-template')({
+    //   template: path.join(inputFileDir, '/index.html'),
+    // }),
     require('rollup-plugin-copy')({
       targets: [{ src: inputFileDir + '/**/*', dest: outputDest }],
     }),
-    {
+    runGulp && {
       name: 'run-gulp',
       buildEnd: async () => {
         return await new Promise(resolve => {
