@@ -10,20 +10,40 @@
     <div id="content"></div>
   </body>
   <script>
-    var str = `# TEditor
+    var str = `# MDPaaz
 
-Hello，I'm TEditor~
+Hello，I'm MDPaaz~
+
+## 基础样式
+
+* 支持 HTML
+* 各级标题（H1-H6）
+* 代码段落
+* 引用段落
+* 文本的[^脚注]
+* 有序列表和无序列表
+* [链接](http://www.lionad.art)和图片
+* 中横线
+* \`行内代码\`
+* H~2~O、21^th^
+* ==标记文本==、++插入文本++、~~删除文本~~、**加粗文本**、*斜体文本*
+
+[^脚注]: 你还可以给文本加**脚注**
+
+## 如何使用
 
 \`\`\`js
-console.log("Enjoy yourself~")
-\`\`\`
+import MDParser from 'MDParser'
 
----
+const parser = new MDParser()
+const parsed = parser.parse(str)
+document.querySelector('#content').innerHTML = parsed
+\`\`\`
 
 ## 基础功能
 
-* 解析标准可选（正在进行）
-* 自由的插件扩展（正在进行）
+* 插件和声明周期（WIP）
+* 解析标准可选（计划中）
 * Inline-Style（计划中）
 * 主题自由（计划中）
 
@@ -36,14 +56,9 @@ console.log("Enjoy yourself~")
 
 ## 阅读更多
 
-### 仿生狮子
-
-> **开源和玩耍**，是最重要的两件事儿啦~（~~其实睡觉也挺重要的...~~）
-> ——Lionad
-
 我是**仿生狮子**，欢迎来[我的博客](http://www.lionad.art)玩耍。额，其实，[Github](https://github.com/Lionad-Morotar) 也行儿...
 
-![作者](https://cdn.jsdelivr.net/gh/Lionad-Morotar/blog-cdn/image/avatar.gif)
+> **开源和玩耍**，是最重要的两件事儿啦（~~当然，睡觉也挺重要的...~~）
 
 ...`
     const parser = new module()

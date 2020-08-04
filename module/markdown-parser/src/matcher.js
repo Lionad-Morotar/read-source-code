@@ -152,6 +152,26 @@ const defaultMatchers = [
       return result
     },
   },
+  {
+    type: 'footnote-content',
+    matcher(str) {
+      const result = { type: 'footnote-content', flow: null, length: 0 }
+      if (str[0] === '[') {
+        const match = str.match(/\[\^([^\[\]]*)\]:\s+([^\n]*)/)
+        if (match && match[0]) {
+          result.flow = match[0]
+          result.length = match[0].length
+          result.offset = match.index + match[0].length
+          result.children = [match[2]]
+          result.data = {
+            text: match[1],
+            href: '#' + match[1],
+          }
+        }
+      }
+      return result
+    },
+  },
   /******************************************************************************* Inline */
   {
     type: 'text',
@@ -166,14 +186,115 @@ const defaultMatchers = [
     },
   },
   {
+    type: 'footnote-pointer',
+    match(str) {
+      const match = str.match(/\[\^([^\[\]]*)\]/)
+      return match ? match.index : Number.MAX_SAFE_INTEGER
+    },
+    matcher(str) {
+      const result = { type: 'footnote-pointer', flow: null, length: 0 }
+      const match = str.match(/\[\^([^\[\]]*)\]/)
+      if (match && match[0]) {
+        result.flow = match[0]
+        result.length = match[0].length
+        result.offset = match.index + match[0].length
+        result.data = {
+          text: match[1],
+          href: '#' + match[1],
+        }
+      }
+      return result
+    },
+  },
+  {
+    type: 'sup',
+    match(str) {
+      const match = str.match(/\^([^\^\s]*)\^/)
+      return match ? match.index : Number.MAX_SAFE_INTEGER
+    },
+    matcher(str) {
+      const result = { type: 'sup', flow: null, length: 0 }
+      const match = str.match(/\^([^\^\s]*)\^/)
+      if (match && match[0]) {
+        result.flow = match[0]
+        result.length = match[0].length
+        result.offset = match.index + match[0].length
+        result.data = {
+          text: match[1],
+        }
+      }
+      return result
+    },
+  },
+  {
+    type: 'sub',
+    match(str) {
+      const match = str.match(/~([^~\s]*)~/)
+      return match ? match.index : Number.MAX_SAFE_INTEGER
+    },
+    matcher(str) {
+      const result = { type: 'sub', flow: null, length: 0 }
+      const match = str.match(/~([^~\s]*)~/)
+      if (match && match[0]) {
+        result.flow = match[0]
+        result.length = match[0].length
+        result.offset = match.index + match[0].length
+        result.data = {
+          text: match[1],
+        }
+      }
+      return result
+    },
+  },
+  {
     type: 'code',
-    priority(str) {
-      const match = str.match(/\`([^\`\s][^\`\`]*[^\`\s])\`/)
+    match(str) {
+      const match = str.match(/\`([^\`\s][^\`]*[^\`\s])\`/)
       return match ? match.index : Number.MAX_SAFE_INTEGER
     },
     matcher(str) {
       const result = { type: 'code', flow: null, length: 0 }
-      const match = str.match(/\`([^\`\s][^\`\`]*[^\`\s])\`/)
+      const match = str.match(/\`([^\`\s][^\`]*[^\`\s])\`/)
+      if (match && match[0]) {
+        result.flow = match[0]
+        result.length = match[0].length
+        result.offset = match.index + match[0].length
+        result.data = {
+          text: match[1],
+        }
+      }
+      return result
+    },
+  },
+  {
+    type: 'mark',
+    match(str) {
+      const match = str.match(/==([^=\s][^=]*[^=\s])==/)
+      return match ? match.index : Number.MAX_SAFE_INTEGER
+    },
+    matcher(str) {
+      const result = { type: 'mark', flow: null, length: 0 }
+      const match = str.match(/==([^=\s][^=]*[^=\s])==/)
+      if (match && match[0]) {
+        result.flow = match[0]
+        result.length = match[0].length
+        result.offset = match.index + match[0].length
+        result.data = {
+          text: match[1],
+        }
+      }
+      return result
+    },
+  },
+  {
+    type: 'insert',
+    match(str) {
+      const match = str.match(/\+\+([^\+\s][^\+]*[^\+\s])\+\+/)
+      return match ? match.index : Number.MAX_SAFE_INTEGER
+    },
+    matcher(str) {
+      const result = { type: 'insert', flow: null, length: 0 }
+      const match = str.match(/\+\+([^\+\s][^\+]*[^\+\s])\+\+/)
       if (match && match[0]) {
         result.flow = match[0]
         result.length = match[0].length
@@ -187,7 +308,8 @@ const defaultMatchers = [
   },
   {
     type: 'delete',
-    priority(str) {
+    priority: 1,
+    match(str) {
       const match = str.match(/~~([^~\s][^~]*[^~\s])~~/)
       return match ? match.index : Number.MAX_SAFE_INTEGER
     },
@@ -207,7 +329,7 @@ const defaultMatchers = [
   },
   {
     type: 'bold',
-    priority(str) {
+    match(str) {
       const match = str.match(/\*\*([^\*\s][^\*]*[^\*\s])\*\*/)
       return match ? match.index : Number.MAX_SAFE_INTEGER
     },
@@ -227,7 +349,7 @@ const defaultMatchers = [
   },
   {
     type: 'italic',
-    priority(str) {
+    match(str) {
       const match = str.match(/\*([^\*\s][^\*]*[^\*\s])\*/)
       return match ? match.index : Number.MAX_SAFE_INTEGER
     },
@@ -247,7 +369,7 @@ const defaultMatchers = [
   },
   {
     type: 'link',
-    priority(str) {
+    match(str) {
       const match = str.match(/\[([^\]]*)\]\(([^\)]*)\)/)
       return match ? match.index : Number.MAX_SAFE_INTEGER
     },
@@ -296,15 +418,20 @@ if (useLineMatcher) {
   })
 }
 
+// TODO refactor
 function resortByType(matchers, type, rest) {
   if (type === 'text') {
-    const matchersPriority = matchers.map(m =>
-      m.hasOwnProperty('priority') ? m.priority(rest) : Number.MAX_SAFE_INTEGER
-    )
+    const matchersMatchOffset = matchers.map(m => (m.hasOwnProperty('match') ? m.match(rest) : Number.MAX_SAFE_INTEGER))
     return matchers.sort((a, b) => {
       const idxa = matchers.findIndex(x => x === a)
       const idxb = matchers.findIndex(x => x === b)
-      return matchersPriority[idxa] - matchersPriority[idxb]
+      let scorea = matchersMatchOffset[idxa]
+      let scoreb = matchersMatchOffset[idxb]
+      if (scorea === scoreb) {
+        scorea -= matchers[idxa].priority || 0
+        scoreb -= matchers[idxb].priority || 0
+      }
+      return scorea - scoreb
     })
   } else {
     return matchers

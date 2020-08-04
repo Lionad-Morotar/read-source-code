@@ -1,6 +1,7 @@
 import $state from './state'
 import $matcher from './matcher'
 import $compile from './compile'
+import $plugin from './plugin'
 
 /**
  * 将 Markdown 代码转为 AST
@@ -58,7 +59,8 @@ function parse(input, parent) {
 function traverse(ast) {
   console.table(ast)
   const codes = ast.map(node => $compile.parse(node))
-  return codes.join('\n')
+  const htmlCode = codes.join('\n')
+  return $plugin.buildEnd(htmlCode)
 }
 
 export default {
