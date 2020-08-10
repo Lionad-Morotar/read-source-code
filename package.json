@@ -10,9 +10,12 @@
     "module-markdown": "cross-env RUN=1 GULP=1 SERVE=1 INPUT=./module/markdown-parser/index.js rollup -c -w",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
-    "polyfill-instanceof": "nodemon ./polyfill/instanceof.js"
+    "polyfill-instanceof": "nodemon ./polyfill/instanceof.js",
+    "polyfill-bind": "nodemon ./polyfill/bind.js",
+    "polyfill-apply": "nodemon ./polyfill/apply.js",
+    "polyfill-call": "nodemon ./polyfill/call.js"
   },
-  "author": "",
+  "author": "Lionad",
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.10.5",
