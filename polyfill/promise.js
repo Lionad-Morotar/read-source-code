@@ -1,63 +1,86 @@
-const PENDING = 'pending'
-const FULFILLED = 'fulfilled'
-const REJECTED = 'rejected'
+/** Promise Polyfill
+ * @see A+ 规范：https://www.ituring.com.cn/article/66566#gotocomment
+ */
+
+const PENDING = 'Pending'
+const FULFILLED = 'Fulfilled'
+const REJECTED = 'Rejected'
 const microTimeout = (process && process.nextTick) || queueMicrotask || (cb => setTimeout(cb, 0))
 
 function Promise(fns) {
   this.state = PENDING
+  this.value = null
+  this.reason = null
   this.thenFns = []
   this.rejectFns = []
 
   const promise = new Proxy(this, {
     get(target, prop) {
       if (prop === 'then') {
-        return thenable
+        return thenHandler
       }
       if (prop === 'catch') {
-        return catchable
+        return catchHandler
       }
       return target[prop]
     },
   })
 
-  function thenable(cb) {
+  function thenHandler(valueRead, reasonRead) {
     if (promise.state === PENDING) {
-      this.thenFns.push(cb)
+      if (valueRead instanceof Function) {
+        this.thenFns.push(valueRead)
+      }
+      if (reasonRead instanceof Function) {
+        this.rejectFns.push(reasonRead)
+      }
       return promise
     }
-    throw Error('Promise has Done')
+    return promise
   }
 
-  function catchable(cb) {
+  function catchHandler(cb) {
     if (promise.state === PENDING) {
       this.rejectFns.push(cb)
       return promise
     }
   }
 
-  function resolve(data) {
-    return microTimeout(() => {
+  function resolve(value) {
+    if (promise.value) {
+      throw new Error('onFulfilled can only be called once')
+    }
+    if (value === promise) {
+      throw new TypeError('Value is equal to current promise')
+    }
+    return microTimeout(async () => {
       if (promise.state === PENDING) {
         promise.state = FULFILLED
-        microTimeout(() => {
-          try {
-            promise.thenFns.reduce((h, c) => c(h), data)
-          } catch (err) {
-            reject(err)
-          }
-        })
+        // TODO
+        promise.value = value
+        try {
+          promise.thenFns.reduce((h, c) => c(h), promise.value)
+        } catch (exception) {
+          reject(exception)
+        }
         return promise
       }
     })
   }
 
-  function reject(err) {
+  function reject(reason) {
+    if (promise.reason) {
+      throw new Error('onRejected can only be called once.')
+    }
     return microTimeout(() => {
       if ([PENDING, FULFILLED].includes(promise.state)) {
         promise.state = REJECTED
-        microTimeout(() => {
-          promise.rejectFns.reduce((h, c) => c(h), err)
-        })
+        promise.reason = reason
+        try {
+          promise.rejectFns.reduce((h, c) => c(h), reason)
+        } catch (exception) {
+          throw exception
+        }
         return promise
       }
     })
@@ -65,8 +88,8 @@ function Promise(fns) {
 
   try {
     fns(resolve, reject)
-  } catch (err) {
-    reject(err)
+  } catch (exception) {
+    reject(exception)
   }
 
   return promise
