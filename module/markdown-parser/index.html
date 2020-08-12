@@ -64,6 +64,20 @@ document.querySelector('#content').innerHTML = parsed
 
 ...`
     const parser = new module()
+
+    // plugin demo: set image styles
+    parser.use({
+      on: {
+        buildEnd({ addTask }) {
+          addTask(s =>
+            s.replace(/(<img [^>]*>)/g, match => {
+              return match.slice(0, -2) + ' style="width: 70%; display: block;" />'
+            })
+          )
+        },
+      },
+    })
+
     const parsed = parser.parse(str)
     document.querySelector('#content').innerHTML = parsed
   </script>
