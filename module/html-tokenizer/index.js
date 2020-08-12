@@ -1,34 +1,34 @@
-function makeMap(arr) {
-  return arr.reduce((h, c) => ((h[c] = true), h), {})
-}
-
-const testHTML = `<div class="hello">
-  <span><input /></span>
-</div>
-`
+/**
+ * HTML Tokenizer
+ * @see https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#The_tokenization_algorithm
+ */
+import utils from '../../utils/index.js'
+import chars from '../../utils/char.js'
 
 const charCodes = {
   lt: '<'.charCodeAt(0),
   gt: '>'.charCodeAt(0),
   slash: '/'.charCodeAt(0),
 }
-const charCodesMap = makeMap(Object.values(charCodes))
+const charCodesMap = utils.makeMap(Object.values(charCodes))
 
 function peekNext(s, i) {
   return s[i + 1]
 }
 
-function Tokenize(raw) {
+export default function Tokenize(raw) {
   if (!(this instanceof Tokenize)) return new Tokenize(raw)
   this.state = null
   this.lastState = null
   this.stash = ''
   this.tagState = null
   this.lastTagState = null
-  this.waitClose = null
+  this.isEndTag = null
+  this.isTagDone = true
   this.raw = raw || null
   this.offset = -1
   this.tokens = []
+  this.data = {}
 }
 
 Tokenize.prototype.recState = function recState(state) {
@@ -43,8 +43,11 @@ Tokenize.prototype.recTagState = function recTagState(state) {
 }
 
 Tokenize.prototype.flush = function flush(state) {
-  this.tokens.push([state, this.stash])
+  Object.assign(this.data, Object.assign({ tag: '', raw: this.stash, state }, this.data))
+  this.tokens.push(this.data)
   this.stash = ''
+  this.data = {}
+  this.isEndTag = null
 }
 
 Tokenize.prototype.exec = function exec() {
@@ -62,29 +65,42 @@ Tokenize.prototype.exec = function exec() {
         if (cur === '>') {
           curCharState = 'tag-close'
         }
-        this.recTagState(curCharState)
+        curCharState && this.recTagState(curCharState)
       } else {
-        curCharState = 'text'
+        if (chars.isWhiteSpace(cur)) {
+          curCharState = 'space'
+        } else {
+          curCharState = 'text'
+        }
       }
-      this.recState(curCharState)
+      curCharState && this.recState(curCharState)
+
+      // * for test
+      // console.log(cur, curCharState, this.isTagDone, this.lastState)
 
       /* flush data */
-      if (this.stash) {
-        if (this.state === 'tag-close') {
+      if (cur === '>') {
+        this.stash += cur
+        this.flush(this.isEndTag ? 'end' : 'open')
+        this.isTagDone = true
+        continue
+      }
+      if (cur === '<') {
+        this.isTagDone = false
+        if (['text', 'space'].includes(this.lastState)) {
+          this.flush('text')
           this.stash += cur
-          this.flush(this.waitClose ? 'tag-end' : 'tag-start')
-          this.waitClose = null
           continue
         }
-        if (this.state === 'tag-open') {
-          if (this.lastState === 'text') {
-            this.flush('text')
-            this.stash += cur
-            continue
-          }
-        }
-        if (cur === '/') {
-          this.waitClose = true
+      }
+      if (cur === '/') {
+        this.isEndTag = true
+        if (this.data.tag) this.data.isSelfClose = true
+      }
+      if (chars.isAlpha(cur) || chars.isNumber(cur)) {
+        if (this.lastState === 'tag-open') {
+          this.data.tag || (this.data.tag = '')
+          this.data.tag += cur
         }
       }
       this.stash += cur
@@ -93,4 +109,22 @@ Tokenize.prototype.exec = function exec() {
   return this
 }
 
-console.log(Tokenize(testHTML).exec().tokens)
+const testHTML = `<div class="hello">
+  <input />
+  <table>
+    <thead>Hello</thead>
+    <tbody>
+      <tr>
+        <td>Hello</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`
+
+console.log(
+  Tokenize(testHTML)
+    .exec()
+    // remove line-wrap
+    .filter(x => x.raw.match(/[a-zA-Z0-9]/))
+)

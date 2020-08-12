@@ -8,7 +8,7 @@
     "ds-lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup -c -w",
     "module-webpack": "nodemon ./module/webpack/index.js",
     "module-markdown": "cross-env RUN=1 GULP=1 SERVE=1 INPUT=./module/markdown-parser/index.js rollup -c -w",
-    "module-html-tokenizer": "nodemon ./module/html-tokenizer/index.js",
+    "module-html-tokenizer": "cross-env RUN=1 INPUT=./module/html-tokenizer/index.js rollup -c -w",
     "polyfill-promise": "nodemon ./polyfill/promise.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
     "polyfill-instanceof": "nodemon ./polyfill/instanceof.js",
