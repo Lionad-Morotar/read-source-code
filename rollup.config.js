@@ -1,6 +1,7 @@
 const path = require('path')
 const cmd = require('node-cmd')
 
+const useHTMLTemplate = !!process.env.HTML
 const runGulp = !!process.env.GULP
 const shouldRun = !!process.env.RUN
 const openDevServer = !!process.env.serve
@@ -14,9 +15,10 @@ export default {
   plugins: [
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
-    // require('rollup-plugin-generate-html-template')({
-    //   template: path.join(inputFileDir, '/index.html'),
-    // }),
+    useHTMLTemplate &&
+      require('rollup-plugin-generate-html-template')({
+        template: path.join(inputFileDir, '/index.html'),
+      }),
     require('rollup-plugin-copy')({
       targets: [{ src: inputFileDir + '/**/*', dest: outputDest }],
     }),
