@@ -16,10 +16,10 @@ Stack.fn.peek = function peek() {
   return this.stack[this.stack.length - 1]
 }
 
-Stack.fn.getLength = function getLength(item) {
+Stack.fn.getLength = function getLength() {
   return this.stack.length
 }
 
-Stack.fn.isEmpty = function isEmpty(item) {
+Stack.fn.isEmpty = function isEmpty() {
   return this.stack.length === 0
 }
