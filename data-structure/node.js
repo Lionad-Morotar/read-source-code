@@ -45,7 +45,7 @@ Node.prototype.unLink = function () {
 
   if (!prev || !next) {
     // 头节点和尾节点不能 unlink
-    return false
+    throw new Error('cannot unlink HEAD or TAIL')
   }
   prev.linkNext(next)
 }
