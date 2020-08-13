@@ -1,3 +1,8 @@
+function isPrintableASCII(c) {
+  const cCode = c.charCodeAt(0)
+  return cCode && cCode >= 32 && cCode <= 126
+}
+
 function isWhiteSpace(c) {
   return c === ' ' || c === '\u0009' || c === '\u00A0'
 }
@@ -17,6 +22,7 @@ function isPlain(c) {
 }
 
 export default {
+  isPrintableASCII,
   isWhiteSpace,
   isAlpha,
   isNumber,
