@@ -3,6 +3,7 @@
 * [Node](./node.js)
 * [Stack](./stack.js)
 * [Queue](./queue.js)
+* [Circular Queue](./circular-queue.js)
 * [LRU/LFU](./lru.js)
 
 原来 Queue 读作 'kju:'... 我以前一直读成 'kqack'...

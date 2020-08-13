@@ -1,25 +1,25 @@
 function Queue() {
-  this.stack = []
+  this.queue = []
 }
 
 Queue.fn = Queue.prototype
 
 Queue.fn.enqueue = function enqueue(item) {
-  this.stack.push(item)
+  this.queue.push(item)
 }
 
 Queue.fn.dequeue = function dequeue() {
-  this.stack.shift()
+  return this.queue.shift()
 }
 
 Queue.fn.getFront = function getFront() {
-  return this.stack[this.stack.length - 1]
+  return this.queue[0]
 }
 
 Queue.fn.getLength = function getLength() {
-  return this.stack.length
+  return this.queue.length
 }
 
 Queue.fn.isEmpty = function isEmpty() {
-  return this.stack.length === 0
+  return this.queue.length === 0
 }
