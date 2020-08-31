@@ -1,13 +1,48 @@
 const tasks = {
+  progress: {},
+  buildStart: {},
   buildEnd: {},
 }
 const dataStore = {}
 
-function buildEnd(s) {
-  // console.log(tasks.buildEnd)
-  // console.log(dataStore)
-  Object.keys(tasks.buildEnd).map(k => {
-    const task = tasks.buildEnd[k]
+// * for test
+function check() {
+  console.log(tasks)
+  console.log(dataStore)
+}
+
+/** Plugins */
+
+function addTask(event, ...args) {
+  const task = tasks[event]
+  let name, cb
+  if (args.length > 1) {
+    ;[name, cb] = args
+  } else {
+    const firstArg = args[0]
+    if (firstArg instanceof Function) {
+      name = 'AnonymousTask-' + String(Math.random()).slice(-6)
+      cb = firstArg
+    } else if (firstArg instanceof Object) {
+      name = firstArg.name
+      cb = firstArg.cb
+    }
+  }
+  task[name] = cb
+}
+
+function addData() {}
+
+function on(events) {
+  Object.keys(events).map(event => {
+    const plugin = events[event]
+    addTask(event, plugin)
+  })
+}
+
+function emit(eventType, s) {
+  Object.keys(tasks[eventType]).map(k => {
+    const task = tasks[eventType][k]
     if (task instanceof Array) {
       s = task.reduce((h, c) => {
         h = c(h)
@@ -20,48 +55,9 @@ function buildEnd(s) {
   return s
 }
 
-/** Plugins */
-
-const addTaskCache = {}
-function addTask(event) {
-  const task = tasks[event]
-  const res =
-    addTaskCache[event] ||
-    (addTaskCache[event] = function (...args) {
-      let name, cb
-      if (args.length > 1) {
-        ;[name, cb] = args
-      } else {
-        const arg = args[0]
-        if (arg instanceof Function) {
-          name = 'AnonymousTask-' + String(Math.random()).slice(-6)
-          cb = arg
-        } else if (arg instanceof Object) {
-          name = arg.name
-          cb = arg.cb
-        }
-      }
-      task[name] = cb
-    })
-
-  return res
-}
-
-function addData() {}
-
-function on(plugins) {
-  Object.keys(plugins).map(event => {
-    const plugin = plugins[event]
-    const task = tasks[event]
-    if (event) {
-      plugin({ addTask: addTask(event) })
-    }
-  })
-}
-
 export default {
   on,
-  buildEnd,
+  emit,
   tasks,
   dataStore,
 }

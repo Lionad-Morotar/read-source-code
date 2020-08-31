@@ -6,7 +6,41 @@
     <link href="./index.css" rel="stylesheet" />
     <link href="./cedium.css" rel="stylesheet" />
   </head>
-  <body>
+  <body style="margin: 0;">
+    <p
+      style="
+        display: -webkit-box;
+        margin: 0;
+        padding: 0.5em;
+        background: #eee;
+        color: #cacaca;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+        font-display: swap;
+        user-select: none;
+      "
+    >
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+      <span>MDPaazMDPaazMDPaazMDPaazMDPaaz</span>
+    </p>
     <div id="content"></div>
   </body>
   <script>
@@ -63,22 +97,32 @@ document.querySelector('#content').innerHTML = parsed
 > **开源和玩耍**，是最重要的两件事儿啦（~~当然，睡觉也挺重要的...~~）
 
 ...`
+    const $container = document.querySelector('#content')
     const parser = new module()
 
     // plugin demo: set image styles
-    parser.use({
-      on: {
-        buildEnd({ addTask }) {
-          addTask(s =>
-            s.replace(/(<img [^>]*>)/g, match => {
-              return match.slice(0, -2) + ' style="width: 70%; display: block;" />'
-            })
-          )
-        },
+    parser.on({
+      progress(message) {
+        switch (message.type) {
+          case 'html':
+            const tempCon = document.createElement('div')
+            tempCon.innerHTML = message.data
+            const child = tempCon.childNodes[0]
+            console.log(child)
+            child && $container.appendChild(child)
+            break
+        }
+      },
+      buildStart() {
+        // $container.innerHTML = 'parsing...'
+      },
+      buildEnd(s) {
+        return s.replace(/(<img [^>]*>)/g, match => {
+          return match.slice(0, -2) + ' style="width: 70%; display: block;" />'
+        })
       },
     })
 
-    const parsed = parser.parse(str)
-    document.querySelector('#content').innerHTML = parsed
+    parser.parse(str).then(parsed => ($container.innerHTML = parsed))
   </script>
 </html>

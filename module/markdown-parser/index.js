@@ -6,18 +6,17 @@ import $plugin from './src/plugin'
 // TODO cache
 function Parser() {
   this.lru = new LRU()
-  this.parse = raw => {
-    const ast = $flows.parse(raw, {
+  this.parse = async raw => {
+    $plugin.emit('buildStart')
+    const ast = await $flows.parse(raw, {
       cache: this.lru,
     })
-    const noNewLineAST = ast.filter(x => x.type !== 'new-line')
-    const htmlCode = $flows.traverse(noNewLineAST)
+    const noWrapLineAST = ast.filter(x => x.type !== 'new-line')
+    const htmlCode = await $flows.stringify(noWrapLineAST)
     return htmlCode
   }
 }
 
-Parser.prototype.use = function use({ on }) {
-  on && $plugin.on(on)
-}
+Parser.prototype.on = $plugin.on
 
 export default Parser
