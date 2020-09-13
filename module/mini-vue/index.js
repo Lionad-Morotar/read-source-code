@@ -32,12 +32,17 @@ function Vue(options) {
   // console.log(this.code)
 
   // gen fn
-  this.code.render = `with(this){return _c('div',{on:{"@click":handleClick()}})}`
+  // this.code.render = `with(this){return _c('div',{on:{"@click":handleClick()}})}`
   this.render = createFunction(this.code.render)
 
-  // gen vnode and element
+  // gen vnode
   const vnode = this.render.call(this)
   // console.log(vnode)
+
+  // TODO
+
+  const testRender = createFunction(`with(this){ handleClick() }`)
+  const exec = testRender.call(this)
 
   this.$mount = selector => {
     document.querySelector(selector).appendChild(nodes)
