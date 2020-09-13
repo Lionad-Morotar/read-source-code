@@ -1,8 +1,18 @@
 import { parse } from './compiler/parser'
 import { generate } from './compiler/codegen'
+import { createFunction } from './compiler/to-function'
+
+import { initRender } from './instance/render'
 
 function Vue(options) {
   Object.assign(this, options)
+
+  initRender(this)
+
+  // mount event on vm
+  for (let event in this.methods) {
+    this[event] = this.methods[event]
+  }
 
   // parse html to ast
   this.ast = parse(this.template)
@@ -20,12 +30,20 @@ function Vue(options) {
   this.code = generate(this.ast)
   // console.log(this.code)
 
+  // gen fn
+  this.code.render = `with(this){return _c('div',{on:{"@click":handleClick}})}`
+  this.render = createFunction(this.code.render)
+
+  // gen vnode
+  const vnode = this.render.call(this)
+  console.log(vnode)
+
   this.$mount = selector => {
     document.querySelector(selector).appendChild(nodes)
   }
 }
 
-const template = `<div @click="handleClick" style="background: #888; border: solid 1px #333;"> Click Me ! </div>`
+const template = `<div @click="handleClick"> Click Me ! </div>`
 
 const vue = new Vue({
   template,
@@ -36,4 +54,4 @@ const vue = new Vue({
   },
 })
 
-console.log(vue)
+// console.log(vue)
