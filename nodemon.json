@@ -1,5 +1,4 @@
 {
   "include": ["utils/index.js"],
-  "ignore": ["dist"],
-  "exec": "cls && node"
+  "ignore": ["dist"]
 }

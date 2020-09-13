@@ -7,6 +7,7 @@
     "al-dfs": "cross-env RUN=1 INPUT=./algorithm/dfs.js rollup -c -w",
     "ds-lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup -c -w",
     "ds-link-list": "cross-env RUN=1 INPUT=./data-structure/link-list.js rollup -c -w",
+    "module-vue": "cross-env RUN=1  INPUT=./module/mini-vue/index.js rollup -c -w",
     "module-webpack": "nodemon ./module/webpack/index.js",
     "module-markdown": "cross-env HTML=1 RUN=1 GULP=1 SERVE=1 INPUT=./module/markdown-parser/index.js rollup -c -w",
     "module-html-tokenizer": "cross-env RUN=1 INPUT=./module/html-tokenizer/index.js rollup -c -w",
