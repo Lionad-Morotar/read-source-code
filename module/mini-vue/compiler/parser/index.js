@@ -32,6 +32,7 @@ export function parse(template, options = baseOptions) {
   let warned = false
 
   parseHTML(template, {
+    warn: () => {},
     expectHTML: options.expectHTML,
     isUnaryTag: options.isUnaryTag,
     canBeLeftOpenTag: options.canBeLeftOpenTag,
