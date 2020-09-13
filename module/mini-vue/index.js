@@ -1,6 +1,7 @@
 import { parse } from './compiler/parser'
 import { generate } from './compiler/codegen'
 import { createFunction } from './compiler/to-function'
+import { createElm } from './vdom/patch'
 
 import { initRender } from './instance/render'
 
@@ -31,12 +32,12 @@ function Vue(options) {
   // console.log(this.code)
 
   // gen fn
-  this.code.render = `with(this){return _c('div',{on:{"@click":handleClick}})}`
+  this.code.render = `with(this){return _c('div',{on:{"@click":handleClick()}})}`
   this.render = createFunction(this.code.render)
 
-  // gen vnode
+  // gen vnode and element
   const vnode = this.render.call(this)
-  console.log(vnode)
+  // console.log(vnode)
 
   this.$mount = selector => {
     document.querySelector(selector).appendChild(nodes)
