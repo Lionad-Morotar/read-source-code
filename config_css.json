@@ -1,0 +1,56 @@
+{
+  "options": {
+    "new_reduce_common_into_parent": false,
+
+    "trim": true,
+    "trim_keep_non_standard_inline_comments": true,
+    "trim_removed_rules_previous_comment": true,
+    "trim_comments": true,
+    "trim_whitespace": true,
+    "trim_breaklines": true,
+    "trim_last_semicolon": true,
+
+    "shorten": true,
+    "shorten_zero": true,
+    "shorten_hexcolor": true,
+    "shorten_hexcolor_extended_names": true,
+    "shorten_hexcolor_UPPERCASE": true,
+    "shorten_font": true,
+    "shorten_background": false,
+    "shorten_background_min": 2,
+    "shorten_margin": true,
+    "shorten_padding": true,
+    "shorten_list_style": true,
+    "shorten_outline": true,
+    "shorten_border": true,
+    "shorten_border_top": true,
+    "shorten_border_right": true,
+    "shorten_border_bottom": true,
+    "shorten_border_left": true,
+    "shorten_border_radius": true,
+
+    "format": true,
+    "format_4095_rules_legacy_limit": false,
+    "format_font_family": true,
+
+    "special_convert_rem": false,
+    "special_convert_rem_browser_default_px": "16",
+    "special_convert_rem_desired_html_px": "10",
+    "special_convert_rem_font_size": true,
+
+    "special_reduce_with_html": false,
+    "special_reduce_with_html_ignore_selectors": ["@-ms-", ":-ms-", "::", ":valid", ":invalid", "+.", ":-"],
+
+    "generate_report": false,
+    "verbose": false,
+
+    "bypass_media_rules": true,
+    "bypass_document_rules": false,
+    "bypass_supports_rules": false,
+    "bypass_page_rules": false,
+    "bypass_charset": false,
+
+    "zero_units": "em, ex, %, px, cm, mm, in, pt, pc, ch, rem, vh, vw, vmin, vmax",
+    "zero_ignore_declaration": []
+  }
+}
