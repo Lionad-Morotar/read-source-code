@@ -23,6 +23,7 @@ const conditionalComment = /^<!\[/
 const reCache = {}
 
 /* 标签匹配 */
+const isPreTag = makeMap('pre')
 const isPlainTextElement = makeMap('script,style,textarea')
 const isUnaryTag = makeMap('area,base,br,col,embed,frame,hr,img,input,isindex,keygen,link,meta,param,source,track,wbr')
 const isIgnoreNewlineTag = makeMap('pre,textarea')

@@ -1,10 +1,10 @@
-const Parse = require('./html-parser')
+const parse = require('./parser')
 
-const html = `
+const template = `
 <html>
-  <head></head>
+  <head>adfasdfasf</head>
   <body>
-    <h1>Test</h1>
+    <h1 class="name" id="asdf">Test</h1>
     <style>
       h1 {
         color: red;
@@ -18,14 +18,6 @@ const html = `
 </html>
 `
 
-Parse(
-  html,
-  {
-    start(...args) {
-      console.log(args)
-    },
-    end(...args) {
-      console.log(args)
-    }
-  }
-)
+const res = parse(template)
+
+console.log('res: ', res.children[1].children[0])
