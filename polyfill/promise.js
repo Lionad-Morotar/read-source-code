@@ -1,4 +1,5 @@
 /** Promise Polyfill
+ * 目前是手糊的，没有按照规范实现
  * @see A+ 规范：https://www.ituring.com.cn/article/66566#gotocomment
  */
 
@@ -95,18 +96,60 @@ function Promise(fns) {
   return promise
 }
 
-new Promise(resolve => {
-  console.log(1)
-  resolve(2)
+Promise.all = function (promises) {
+  if (!Array.isArray(promises)) {
+    throw new TypeError('should be an array')
+  }
+  const results = []
+  let counts = 0
+  return new Promise((resolve, reject) => {
+    promises.map((p, i) => {
+      p.then(data => {
+        results[i] = data
+        counts++
+        if (counts === promises.length) {
+          return resolve(results)
+        }
+      }, err => {
+        return reject(err)
+      })
+    })
+  })
+}
+
+// 正常流程
+// new Promise(resolve => {
+//   console.log(1)
+//   resolve(2)
+// })
+//   .then(data => {
+//     console.log(data)
+//     return 3
+//   })
+//   .then(data => {
+//     console.log(data)
+//   })
+//   .catch(error => {
+//     console.log('[ERR]', error)
+//   })
+
+
+// Promise.all 正常返回 Promises 运行完的结果
+Promise.all([
+  new Promise(resolve => setTimeout(() => resolve(1), 300)),
+  new Promise(resolve => setTimeout(() => resolve(2), 200)),
+  new Promise(resolve => setTimeout(() => resolve(3), 100)),
+]).then(datas => {
+  console.log('promise.all: ', datas)
 })
-  .then(data => {
-    console.log(data)
-    return 3
-  })
-  .then(data => {
-    console.log(data)
-    return error
-  })
-  .catch(error => {
-    console.log('[ERR]', error)
-  })
+
+// Promise.all 能捕获单个 Promise 报错
+Promise.all([
+  new Promise(resolve => setTimeout(() => resolve(1), 300)),
+  new Promise(resolve => setTimeout(() => resolve(2), 200)),
+  new Promise((resolve, reject) => reject('error'), 100),
+]).then(datas => {
+  console.log('promise.all: ', datas)
+}).catch(error => {
+  console.log(error)
+})
