@@ -1,4 +1,6 @@
-const parse = require('./parser')
+const fs = require('fs')
+const path = require('path')
+
 const minifier = require('./minifier')
 
 const template = `
@@ -23,10 +25,16 @@ const template = `
       var t = 1
       console.log(t)
     </script>
-    <h3>Test W</h3>
+    <h3>Test W<span>Test</span></h3>
     <style>
-      h3 {
+      h3 span {
         color: black;
+      }
+      h3 span {
+
+      }
+      h3 p {
+        color: red;
       }
     </style>
     <script>
@@ -36,10 +44,6 @@ const template = `
   </body>
 `
 
-const ast = parse(template)
+const minhtml = minifier(template)
 
-const { root, style } = minifier(ast)
-
-console.log('style: ', style)
-
-// console.log('root: ', root)
+fs.writeFileSync(path.join(__dirname, '../dist/minhtml.html'), minhtml)

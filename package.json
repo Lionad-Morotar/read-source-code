@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-run": "^2.0.2",
+    "cheerio": "^1.0.0-rc.3",
     "cross-env": "^7.0.2",
     "css-purge": "^3.1.8",
     "eslint": "^6.2.2",

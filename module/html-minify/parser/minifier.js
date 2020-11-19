@@ -1,50 +1,52 @@
 const PostCSS = require('postcss')
 
-// 克隆节点
-function cloneNode(node) {
-  return {
-    tag: node.tag,
-    attrsList: node.attrsList,
-    attrsMap: node.attrsMap,
-    text: node.text,
-    children: []
-  }
-}
+// const parse = require('./parser')
+const cheerio = require('cheerio')
 
-// 遍历 AST，并初步处理节点
-function extractFrom(ast, applys) {
-  const tags = applys.tags
+/**
+ * 最小化 HTML
+ * @param {String} htmlraw 传入未压缩的 HTML 源码
+ * @returns {String} minhtml 返回压缩后的 HTML 源码
+ */
+module.exports = function minifier(htmlraw) {
+  const $ = cheerio.load(htmlraw)
 
-  function dfs(node) {
-    const newNode = cloneNode(node)
+  // 去除空脚本
+  $('script').replaceWith('')
 
-    const tagMatched = tags[node.tag]
-    if (tagMatched) {
-      return tagMatched(node)
-    }
+  // 去除脚本回退
+  $('noscript').replaceWith('')
 
-    if (node.children && node.children.length) {
-      newNode.children = node.children.map(x => dfs(x)).filter(Boolean)
-    }
-    return newNode
-  }
+  // 去除超链接（链接通常十分长）
+  $('a').removeAttr('href')
 
-  return dfs(ast)
-}
-
-// 处理 HTML
-module.exports = function minifier(ast) {
+  // 去除样式
   let style = ''
-  const root = extractFrom(ast, {
-    tags: {
-      script: _ => null,
-      style: node => style += (node.children || [])[0].text
+  $('style').filter(function () {
+    const item = $(this)
+    style += item.html()
+    return true
+  }).replaceWith('')
+
+  // CSS 摇树优化
+  // TODO 去除空声明
+  const css = PostCSS.parse(style)
+  css.nodes.map(rule => {
+    const selector = rule.selector
+    const matchNode = selector && $(selector)
+    const matched = matchNode && matchNode.length
+
+    if (!matched) {
+      rule.remove()
     }
   })
 
-  const cssnodes = PostCSS.parse(style).nodes
-
-  cssnodes.map(rule => {
-    console.log(rule.selector)
+  // 重新生成样式
+  let regenCSS = ''
+  css.nodes.map(rule => {
+    regenCSS += rule.toString() + '\n'
   })
+  $('body').append(`<style>${regenCSS}</style>`)
+
+  return $.html()
 }
