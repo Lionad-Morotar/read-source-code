@@ -55,7 +55,7 @@ module.exports = function parse(template) {
       chars(text) {
         // console.log('text: ', text)
 
-        const lineBreakRE = /[\r|\n|\r\n]{1}/
+        const lineBreakRE = /^[\r|\n|\r\n|\s]*$/
         if (lineBreakRE.test(text)) return null
 
         if (text && currentParent) {

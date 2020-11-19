@@ -1,10 +1,9 @@
 const parse = require('./parser')
+const minifier = require('./minifier')
 
 const template = `
-<html>
-  <head>adfasdfasf</head>
   <body>
-    <h1 class="name" id="asdf">Test</h1>
+    <h1>Test Q</h1>
     <style>
       h1 {
         color: red;
@@ -14,10 +13,33 @@ const template = `
       var t = 1
       console.log(t)
     </script>
+    <h2>Test W</h2>
+    <style>
+      h2 {
+        color: blue;
+      }
+    </style>
+    <script>
+      var t = 1
+      console.log(t)
+    </script>
+    <h3>Test W</h3>
+    <style>
+      h3 {
+        color: black;
+      }
+    </style>
+    <script>
+      var t = 1
+      console.log(t)
+    </script>
   </body>
-</html>
 `
 
-const res = parse(template)
+const ast = parse(template)
 
-console.log('res: ', res.children[1].children[0])
+const { root, style } = minifier(ast)
+
+console.log('style: ', style)
+
+// console.log('root: ', root)
