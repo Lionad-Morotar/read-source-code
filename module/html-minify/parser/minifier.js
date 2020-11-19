@@ -1,6 +1,5 @@
 const PostCSS = require('postcss')
 
-// const parse = require('./parser')
 const cheerio = require('cheerio')
 
 /**
@@ -29,15 +28,21 @@ module.exports = function minifier(htmlraw) {
   }).replaceWith('')
 
   // CSS 摇树优化
-  // TODO 去除空声明
+  // TODO 去除空声明 and more ...
   const css = PostCSS.parse(style)
   css.nodes.map(rule => {
-    const selector = rule.selector
-    const matchNode = selector && $(selector)
-    const matched = matchNode && matchNode.length
+    // console.log(rule.selector)
 
-    if (!matched) {
-      rule.remove()
+    try {
+      const selector = rule.selector
+      const matchNode = selector && $(selector)
+      const matched = matchNode && matchNode.length
+
+      if (!matched) {
+        rule.remove()
+      }
+    } catch (error) {
+      // rule.remove()
     }
   })
 
@@ -46,7 +51,7 @@ module.exports = function minifier(htmlraw) {
   css.nodes.map(rule => {
     regenCSS += rule.toString() + '\n'
   })
-  $('body').append(`<style>${regenCSS}</style>`)
+  $('head').append(`<style>${regenCSS}</style>`)
 
   return $.html()
 }
