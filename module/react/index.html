@@ -1,0 +1,21 @@
+<html lang="zh">
+  <head>
+    <title>Demo page</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      const rawConLog = console.log
+      console.log = (...args) => {
+        const $seg = document.getElementById('log')
+        const $text = document.createElement('div')
+        $text.innerHTML = JSON.stringify(args)
+        $seg.appendChild($text)
+        rawConLog(...args)
+      }
+    </script>
+  </head>
+  <body style="margin: 0;">
+    <div id="app"></div>
+    <div id="log"></div>
+  </body>
+</html>
