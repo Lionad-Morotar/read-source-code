@@ -1,3 +1,4 @@
+import { render } from './render'
 import { isHTMLTags } from './const'
 import { warn } from './utils'
 
@@ -20,30 +21,9 @@ function createNode (tag, props, children = []) {
   }
 }
 
-/* Create Elements */
-
-function createElement (node) {
-  const { type, props = {} } = node
-  const children = [...node.children || []]
-  const $elem = document.createElement(type)
-  // Object.entries(props).map(([k, v]) => $elem.setAttribute(k, v))
-  Object.entries(props).map(([k, v]) => $elem[k] = v)
-  const $children = children.map(x => createElement(x))
-  $children.map(x => $elem.appendChild(x))
-
-  return $elem
-}
-
-/* Renders */
-
-function render (node, container) {
-  container = container || document.getElementById('app')
-  const $elem = createElement(node)
-  container.appendChild($elem)
-}
-
 /* Main */
 
 if (globalThis.window) {
-  render(h('div', { id: 'test' }, [h('a', {}, 'no click'), h('a', {}, 'no click')]))
+  // render(h('a', {}, 'no!'))
+  render(h('div', { id: 'test' }, [h('a', {}, 'click?'), h('a', {}, 'no!')]))
 }

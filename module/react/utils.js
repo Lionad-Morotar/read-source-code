@@ -6,3 +6,15 @@ export function makeMap(s) {
 export function warn(str) {
   console.warn(`[WARN REACT] ${str}`)
 }
+
+export function log(str) {
+  console.log(`[INFO REACT] ${str}`)
+  // const rawConLog = console.log
+  // console.log = (...args) => {
+  //   const $seg = document.getElementById('log')
+  //   const $text = document.createElement('div')
+  //   $text.innerHTML = JSON.stringify(args)
+  //   $seg.appendChild($text)
+  //   rawConLog(...args)
+  // }
+}
