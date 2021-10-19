@@ -13,6 +13,7 @@
     "module-html-tokenizer": "cross-env RUN=1 INPUT=./module/html-tokenizer/index.js rollup -c -w",
     "module-react": "cross-env HTML=1 RUN=1 GULP=1 SERVE=1 INPUT=./module/react/index.js rollup -c -w",
     "polyfill-promise": "nodemon ./polyfill/promise/promise.js",
+    "polyfill-promise-20loc": "nodemon ./polyfill/promise/promise-20loc.js",
     "polyfill-generator": "nodemon ./polyfill/generator.js",
     "polyfill-instanceof": "nodemon ./polyfill/instanceof.js",
     "polyfill-bind": "nodemon ./polyfill/bind.js",
