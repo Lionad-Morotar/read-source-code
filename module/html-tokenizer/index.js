@@ -12,10 +12,6 @@ const charCodes = {
 }
 const charCodesMap = utils.makeMap(Object.values(charCodes))
 
-function peekNext(s, i) {
-  return s[i + 1]
-}
-
 export default function Tokenize(raw) {
   if (!(this instanceof Tokenize)) return new Tokenize(raw)
   this.state = null
@@ -125,6 +121,7 @@ const testHTML = `<div class="hello">
 console.log(
   Tokenize(testHTML)
     .exec()
+    .tokens
     // remove line-wrap
     .filter(x => x.raw.match(/[a-zA-Z0-9]/))
 )
