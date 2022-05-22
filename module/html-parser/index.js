@@ -7,7 +7,10 @@ import chars from '../../utils/char.js'
 import Node from '../../data-structure/node'
 
 const parserConfig = {
-  filterEmpty: true
+  // is \r\n and spaces considered as a node
+  filterEmpty: true,
+  //// is text a single node or an attribute of the parent node
+  //// compactTextNode: true
 }
 
 const tagName = '[a-zA-Z_][-.0-9_a-zA-Z]*'
@@ -16,13 +19,15 @@ const startTagClose = /^\s*(\/?)>/
 const endTag = new RegExp('^<\\/(' + tagName + ')>')
 const attribute = /^\s*([^\s"'<>\/=]+)\s*=\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+))?/
 
+const isPlainTextElement = utils.makeMapFn('script,style,textarea'.split(','))
+
 function parseHTML (html) {
   const stack = []
-  let count = 0
-  let root = null
+  let root = []
   const getLast = () => stack[stack.length - 1]
+  const isLastPlainTextTag = () => getLast() && isPlainTextElement(getLast().data.tagName)
 
-  while (html && (count ++ < 20)) {
+  while (html) {
     const textEnd = html.indexOf("<")
     if (textEnd === 0) {
       const startTagMatch = parseStartTag()
@@ -30,7 +35,7 @@ function parseHTML (html) {
       
       parseEndTag()
     }
-    if (textEnd > 0) {
+    else if (textEnd > 0) {
       let text = ''
       let nextEnd
       while (
@@ -66,6 +71,9 @@ function parseHTML (html) {
           handleText(nodeData)
         }
       }
+    }
+    else {
+      break
     }
   } 
 
@@ -104,6 +112,36 @@ function parseHTML (html) {
     }
   }
 
+  function handleStartTag (nodeData) {
+    const node = new Node(nodeData)
+    const last = getLast()
+    if (last) {
+      last.addNexts(node)
+    } else {
+      root.push(node)
+    }
+    if (!nodeData.isUnary) {
+      stack.push(node)
+    }
+  }
+
+  function handleText (nodeData) {
+    const node = new Node(nodeData)
+    const last = getLast()
+    if (last) {
+      if (parserConfig.compactTextNode) {
+        last.data = {
+          ...nodeData,
+          ...last.data,
+        }
+      } else {
+        last.addNexts(node)
+      }
+    } else {
+      root.push(node)
+    }
+  }
+
   function parseEndTag () {
     const end = html.match(endTag)
     if (end) {
@@ -119,51 +157,43 @@ function parseHTML (html) {
     }
   }
 
-  function handleStartTag (nodeData) {
-    const node = new Node(nodeData)
-    if (!root) {
-      root = node
-    }
-    const last = getLast()
-    if (last) {
-      last.addNexts(node)
-    }
-    if (!nodeData.isUnary) {
-      stack.push(node)
-    }
-  }
-
-  function handleText (nodeData) {
-    const node = new Node(nodeData)
-    const last = getLast()
-    if (last) {
-      last.addNexts(node)
-    }
-  }
-
   return {
-    root,
-    stack
+    root
   }
 }
 
-const testHTML = `<div class="hello" id="world">
-  <input class="input 1" />
-  plain text < plain > text
-  <input class="input 2" />
-  <table>
-    <thead>Hello</thead>
-    <tbody>
-      <tr>
-        <td>Hello</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+const testHTML = 
+`
+  <div class="hello" id="world">
+    <input class="input 1" />
+    plain text < plain > text
+    <input class="input 2" />
+    <table>
+      <thead>Hello</thead>
+      <tbody>
+        <tr>
+          <td>Hello</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <input class="input 3" />
+  <style>
+    .css { css: 'css' }
+  </style>
+  <div test="test"></div>
 `
 
+
+
 const root = parseHTML(testHTML).root
-const wash = node => node ? ({ data: node.data, next: (node.next || []).map(wash) }) : null
+const wash = node => node instanceof Array
+  ? node.map(wash)
+  : node 
+  ? (node.next || []).map(wash).length
+    ? ({ data: node.data, next: (node.next || []).map(wash) })
+    : ({ data: node.data })
+  : null
 const res = wash(root)
 // console.log(root)
 console.log(JSON.stringify(res, null, 2))
