@@ -13,34 +13,49 @@ const parserConfig = {
   //// compactTextNode: true
 }
 
-const tagName = '[a-zA-Z_][-.0-9_a-zA-Z]*'
-const startTagOpen = new RegExp('^<(' + tagName + ')')
-const startTagClose = /^\s*(\/?)>/
-const endTag = new RegExp('^<\\/(' + tagName + ')>')
-const attribute = /^\s*([^\s"'<>\/=]+)\s*=\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+))?/
+const tagNameRegex = '[a-zA-Z_][-.0-9_a-zA-Z]*'
+const startTagOpenRegex = new RegExp('^<(' + tagNameRegex + ')')
+const startTagCloseRegex = /^\s*(\/?)>/
+const endTagRegex = new RegExp('^<\\/(' + tagNameRegex + ')>')
+const attributeRegex = /^\s*([^\s"'<>\/=]+)\s*=\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+))?/
+const commentRegex = /^<!--/
 
-const isPlainTextElement = utils.makeMapFn('script,style,textarea'.split(','))
+// const isPlainTextElement = utils.makeMapFn('script,style,textarea'.split(','))
 
 function parseHTML (html) {
   const stack = []
   let root = []
   const getLast = () => stack[stack.length - 1]
-  const isLastPlainTextTag = () => getLast() && isPlainTextElement(getLast().data.tagName)
+  // const isLastPlainTextTag = () => getLast() && isPlainTextElement(getLast().data.tagName)
 
   while (html) {
     const textEnd = html.indexOf("<")
     if (textEnd === 0) {
-      const startTagMatch = parseStartTag()
-      startTagMatch && handleStartTag(startTagMatch)
+
+      // FIXME unfinished comment will fall into dead loop
+      const commentMatch = matchComment()
+      if (commentMatch) {
+        handleComment()
+      }
+
+      const startTagMatch = matchStartTag()
+      if (startTagMatch) {
+        handleStartTag(startTagMatch)
+        continue
+      }
       
-      parseEndTag()
+      const endTagMatch = matchEndTag()
+      if (endTagMatch) {
+        handleEndTag(endTagMatch)
+      }
     }
     else if (textEnd > 0) {
       let text = ''
       let nextEnd
       while (
-        !endTag.test(html) &&
-        !startTagOpen.test(html)
+        !endTagRegex.test(html) &&
+        !startTagOpenRegex.test(html) &&
+        !commentRegex.test(html)
       ) {
         nextEnd = html.indexOf("<")
         if (nextEnd < 0) {
@@ -59,17 +74,9 @@ function parseHTML (html) {
       if (text) {
         const nodeData = {
           tagName: 'text',
-          text: parserConfig.filterEmpty
-            ? text.trim()
-            : text
+          text
         }
-        if (parserConfig.filterEmpty) {
-          if (text.replace(/\s/g, '').length) {
-            handleText(nodeData)
-          }
-        } else {
-          handleText(nodeData)
-        }
+        handleText(nodeData)
       }
     }
     else {
@@ -81,8 +88,8 @@ function parseHTML (html) {
     html = html.slice(len)
   }
 
-  function parseStartTag () {
-    const start = html.match(startTagOpen)
+  function matchStartTag () {
+    const start = html.match(startTagOpenRegex)
     if (start) {
       const attrs = {}
       const nodeData = {
@@ -91,7 +98,7 @@ function parseHTML (html) {
       advance(start[0].length)
       let attr
       let hasAttr = false
-      while (attr = html.match(attribute)) {
+      while (attr = html.match(attributeRegex)) {
         const [all, name, val] = attr
         advance(all.length)
         attrs[name] = val
@@ -100,7 +107,7 @@ function parseHTML (html) {
       if (hasAttr) {
         nodeData.attrs = attrs
       }
-      const end = html.match(startTagClose)
+      const end = html.match(startTagCloseRegex)
       if (end) {
         const [all, unarySlash] = end
         if (unarySlash) {
@@ -125,8 +132,35 @@ function parseHTML (html) {
     }
   }
 
+  function matchComment () {
+    return commentRegex.test(html)
+  }
+
+  function handleComment () {
+    const commentEnd = html.indexOf('-->')
+    if (commentEnd > 0) {
+      const text = html.slice(4, commentEnd)
+      advance(commentEnd + 3)
+      handleText({
+        tagName: 'text',
+        text,
+        isComment: true
+      })
+    }
+  }
+
   function handleText (nodeData) {
-    const node = new Node(nodeData)
+    const node = new Node({
+      ...nodeData,
+      text: parserConfig.filterEmpty
+        ? nodeData.text.trim()
+        : nodeData.text
+    })
+    if (parserConfig.filterEmpty) {
+      if (nodeData.text.replace(/\s/g, '').length == 0) {
+        return
+      }
+    }
     const last = getLast()
     if (last) {
       if (parserConfig.compactTextNode) {
@@ -142,18 +176,19 @@ function parseHTML (html) {
     }
   }
 
-  function parseEndTag () {
-    const end = html.match(endTag)
-    if (end) {
-      const [all, tagName] = end
-      const last = getLast()
-      if (last) {
-        if (!tagName === last.data.tagName) {
-          throw new Error('[HTML Parser] end tag mismatch')
-        }
-        stack.pop()
-        advance(all.length)
+  function matchEndTag () {
+    return html.match(endTagRegex)
+  }
+
+  function handleEndTag (endTagMatch) {
+    const [all, tagName] = endTagMatch
+    const last = getLast()
+    if (last) {
+      if (!tagName === last.data.tagName) {
+        throw new Error('[HTML Parser] end tag mismatch')
       }
+      stack.pop()
+      advance(all.length)
     }
   }
 
@@ -181,7 +216,9 @@ const testHTML =
   <style>
     .css { css: 'css' }
   </style>
-  <div test="test"></div>
+  <div test="test1"></div>
+  <!-- hello comment -->
+  <div test="test2"></div>
 `
 
 
