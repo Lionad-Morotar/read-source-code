@@ -11,6 +11,8 @@
     "module-webpack": "nodemon ./module/webpack/index.js",
     "module-markdown": "cross-env HTML=1 RUN=1 GULP=1 SERVE=1 INPUT=./module/markdown-parser/index.js rollup -c -w",
     "module-html-parser": "cross-env RUN=1 INPUT=./module/html-parser/index.js rollup -c -w",
+    "test-html-parser": "mocha ./module/html-parser/test/index.js",
+    "watch:test-html-parser": "npm-watch test-html-parser",
     "module-html-tokenizer": "cross-env RUN=1 INPUT=./module/html-tokenizer/index.js rollup -c -w",
     "module-react": "cross-env HTML=1 RUN=1 GULP=1 SERVE=1 INPUT=./module/react/index.js rollup -c -w",
     "polyfill-promise": "nodemon ./polyfill/promise/promise.js",
@@ -20,6 +22,23 @@
     "polyfill-bind": "nodemon ./polyfill/bind.js",
     "polyfill-apply": "nodemon ./polyfill/apply.js",
     "polyfill-call": "nodemon ./polyfill/call.js"
+  },
+  "watch": {
+    "test-html-parser": {
+      "see": "https://github.com/M-Zuber/npm-watch/issues/91",
+      "patterns": [
+        "build/**/*",
+        "data-structure/**/*",
+        "module/**/*",
+        "polyfill/**/*",
+        "utils/**/*"
+      ],
+      "ignore": [
+        "build",
+        "node_modules"
+      ],
+      "delay": 300
+    }
   },
   "author": "Lionad",
   "license": "MIT",

@@ -1,0 +1,129 @@
+[
+  {
+    "data": {
+      "tagName": "div",
+      "attrs": {
+        "class": "hello",
+        "id": "world"
+      }
+    },
+    "next": [
+      {
+        "data": {
+          "tagName": "input",
+          "attrs": {
+            "class": "input 1"
+          },
+          "isUnary": true
+        }
+      },
+      {
+        "data": {
+          "text": "plain text < plain > text",
+          "tagName": "text"
+        }
+      },
+      {
+        "data": {
+          "tagName": "input",
+          "attrs": {
+            "class": "input 2"
+          },
+          "isUnary": true
+        }
+      },
+      {
+        "data": {
+          "tagName": "table"
+        },
+        "next": [
+          {
+            "data": {
+              "tagName": "thead"
+            },
+            "next": [
+              {
+                "data": {
+                  "text": "Hello",
+                  "tagName": "text"
+                }
+              }
+            ]
+          },
+          {
+            "data": {
+              "tagName": "tbody"
+            },
+            "next": [
+              {
+                "data": {
+                  "tagName": "tr"
+                },
+                "next": [
+                  {
+                    "data": {
+                      "tagName": "td"
+                    },
+                    "next": [
+                      {
+                        "data": {
+                          "text": "Hello",
+                          "tagName": "text"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "data": {
+      "tagName": "input",
+      "attrs": {
+        "class": "input 3"
+      },
+      "isUnary": true
+    }
+  },
+  {
+    "data": {
+      "tagName": "style"
+    },
+    "next": [
+      {
+        "data": {
+          "text": ".css { css: 'css' }",
+          "tagName": "text"
+        }
+      }
+    ]
+  },
+  {
+    "data": {
+      "tagName": "div",
+      "attrs": {
+        "test": "test1"
+      }
+    }
+  },
+  {
+    "data": {
+      "text": "hello comment",
+      "isComment": true,
+      "tagName": "text"
+    }
+  },
+  {
+    "data": {
+      "tagName": "div",
+      "attrs": {
+        "test": "test2"
+      }
+    }
+  }
+]

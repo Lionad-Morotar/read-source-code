@@ -22,7 +22,7 @@ const commentRegex = /^<!--/
 
 // const isPlainTextElement = utils.makeMapFn('script,style,textarea'.split(','))
 
-function parseHTML (html) {
+export default function parseHTML (html) {
   const stack = []
   let root = []
   const getLast = () => stack[stack.length - 1]
@@ -71,15 +71,10 @@ function parseHTML (html) {
         }
       }
       
-      if (text) {
-        const nodeData = {
-          tagName: 'text',
-          text
-        }
-        handleText(nodeData)
-      }
+      text && handleText({ text })
     }
     else {
+      handleText({ text: html })
       break
     }
   } 
@@ -142,7 +137,6 @@ function parseHTML (html) {
       const text = html.slice(4, commentEnd)
       advance(commentEnd + 3)
       handleText({
-        tagName: 'text',
         text,
         isComment: true
       })
@@ -152,6 +146,7 @@ function parseHTML (html) {
   function handleText (nodeData) {
     const node = new Node({
       ...nodeData,
+      tagName: 'text',
       text: parserConfig.filterEmpty
         ? nodeData.text.trim()
         : nodeData.text
@@ -197,40 +192,3 @@ function parseHTML (html) {
   }
 }
 
-const testHTML = 
-`
-  <div class="hello" id="world">
-    <input class="input 1" />
-    plain text < plain > text
-    <input class="input 2" />
-    <table>
-      <thead>Hello</thead>
-      <tbody>
-        <tr>
-          <td>Hello</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <input class="input 3" />
-  <style>
-    .css { css: 'css' }
-  </style>
-  <div test="test1"></div>
-  <!-- hello comment -->
-  <div test="test2"></div>
-`
-
-
-
-const root = parseHTML(testHTML).root
-const wash = node => node instanceof Array
-  ? node.map(wash)
-  : node 
-  ? (node.next || []).map(wash).length
-    ? ({ data: node.data, next: (node.next || []).map(wash) })
-    : ({ data: node.data })
-  : null
-const res = wash(root)
-// console.log(root)
-console.log(JSON.stringify(res, null, 2))
