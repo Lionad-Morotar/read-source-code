@@ -11,6 +11,11 @@ function makeMap(arr) {
   return arr.reduce((h, c) => ((h[c] = true), h), {})
 }
 
+function makeMapFn(arr) {
+  const map = makeMap(arr)
+  return s => map[s] || false
+}
+
 function deepClone(obj) {
   const isObj = isObject(obj)
   if (!isObj) return obj
@@ -93,6 +98,7 @@ function cancelAnimationFrame(id) {
 
 export default {
   makeMap,
+  makeMapFn,
   deepClone,
   forAwait,
   nextFrame,
