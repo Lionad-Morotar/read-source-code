@@ -46,6 +46,9 @@ export default {
     sourcemap: true,
   },
   watch: {
-    include: inputFileDir + '/**/*.js',
+    include: [
+      inputFileDir + '/**/*.js',
+      inputFileDir + '/index.html'
+    ]
   },
 }

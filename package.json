@@ -7,7 +7,7 @@
     "algorithm:dfs": "cross-env RUN=1 INPUT=./algorithm/dfs.js rollup -c -w",
     "datastructure:lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup -c -w",
     "datastructure:link-list": "cross-env RUN=1 INPUT=./data-structure/link-list.js rollup -c -w",
-    "module:mini-vue": "cross-env RUN=1 INPUT=./module/mini-vue/index.js rollup -c -w",
+    "module:mini-vue": "cross-env HTML=1 RUN=1 SERVE=1 INPUT=./module/mini-vue/index.js rollup -c -w",
     "test:mini-vue": "mocha ./module/mini-vue/test/index.js",
     "watch:test:mini-vue": "npm-watch test:mini-vue",
     "module:webpack": "nodemon ./module/webpack/index.js",
@@ -29,23 +29,29 @@
     "polyfill:call": "nodemon ./polyfill/call.js"
   },
   "watch": {
-    "test-html-parser": {
+    "test:html-parser": {
       "see": "https://github.com/M-Zuber/npm-watch/issues/91",
       "patterns": [
         "data-structure/**/*",
         "utils/**/*",
-        "build/module/html-parser",
-        "module/html-parser"
+        "build/module/html-parser"
       ],
-      "delay": 1000
+      "delay": 500
     },
-    "test-template-parser": {
+    "test:template-parser": {
       "see": "https://github.com/M-Zuber/npm-watch/issues/91",
       "patterns": [
-        "build/module/template-parser",
-        "module/template-parser"
+        "build/module/template-parser"
       ],
-      "delay": 1200
+      "delay": 500
+    },
+    "test:mini-vue": {
+      "see": "https://github.com/M-Zuber/npm-watch/issues/91",
+      "patterns": [
+        "build/module/html-parser",
+        "build/module/mini-vue"
+      ],
+      "delay": 500
     }
   },
   "author": "Lionad",

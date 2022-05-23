@@ -1,0 +1,78 @@
+<html lang="zh">
+  <head>
+    <title>Demo page</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body style="margin: 0;">
+    <p
+      style="
+        display: -webkit-box;
+        margin: 0;
+        padding: 0.5em;
+        background: #eee;
+        color: #cacaca;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+        user-select: none;
+        word-break: break-all;
+        line-height: 1.5;
+        font-size: 12px;
+        letter-spacing: 1px;
+      "
+    >
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+      <span>MiniVueMiniVueMiniVueMiniVueMiniVue</span>
+    </p>
+    <div id="app"></div>
+  </body>
+  <script>
+    window.onload = () => {
+      const Vue = module
+
+      const template = `<div @click="handleClick"> Click Me ! </div>`
+
+      const vue = new Vue({
+        template,
+        methods: {
+          handleClick() {
+            console.log('handleClick')
+          },
+        },
+      })
+
+      vue.$mount('#app')
+    }
+  </script>
+</html>
