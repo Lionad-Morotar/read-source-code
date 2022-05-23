@@ -27,17 +27,12 @@
     "test-html-parser": {
       "see": "https://github.com/M-Zuber/npm-watch/issues/91",
       "patterns": [
-        "build/**/*",
         "data-structure/**/*",
-        "module/**/*",
-        "polyfill/**/*",
-        "utils/**/*"
+        "utils/**/*",
+        "build/module/html-parser",
+        "module/html-parser"
       ],
-      "ignore": [
-        "build",
-        "node_modules"
-      ],
-      "delay": 300
+      "delay": 1000
     }
   },
   "author": "Lionad",
