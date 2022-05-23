@@ -1,7 +1,3 @@
-/**
- * HTML Parser
- * mostly a copy from vue.js
- */
 import utils from '../../utils/index.js'
 import chars from '../../utils/char.js'
 import Node from '../../data-structure/node'
@@ -22,7 +18,15 @@ const commentRegex = /^<!--/
 
 // const isPlainTextElement = utils.makeMapFn('script,style,textarea'.split(','))
 
-export default function parseHTML (html) {
+/**
+ * HTML Parser
+ * build from scratch
+ * @param {String} html source of html
+ * @param {Record<String,Fns>} parseHooks hook fn for some node type: comment, text
+ * @todo more parseHooks options
+ * @returns root of the ast, which is an array
+ */
+export default function parseHTML (html, parseHooks = {}) {
   const stack = []
   let root = []
   const getLast = () => stack[stack.length - 1]
@@ -71,10 +75,16 @@ export default function parseHTML (html) {
         }
       }
       
-      text && handleText({ text })
+      if (text) {
+        const node = handleText({ text })
+        if (!node?.data?.isComment) {
+          parseHooks.text && parseHooks.text(node)
+        }
+      }
     }
     else {
-      handleText({ text: html })
+      const node = handleText({ text: html })
+      parseHooks.text && parseHooks.text(node)
       break
     }
   } 
@@ -136,10 +146,12 @@ export default function parseHTML (html) {
     if (commentEnd > 0) {
       const text = html.slice(4, commentEnd)
       advance(commentEnd + 3)
-      handleText({
+      const nodeData = {
         text,
         isComment: true
-      })
+      }
+      const node = handleText(nodeData)
+      parseHooks.comment && parseHooks.comment(node)
     }
   }
 
@@ -169,6 +181,7 @@ export default function parseHTML (html) {
     } else {
       root.push(node)
     }
+    return node
   }
 
   function matchEndTag () {
