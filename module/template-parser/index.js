@@ -3,7 +3,7 @@
  * @param {{ tagName:'text', text: string, isComment?: boolean }} textNode
  * @returns { ...textNode, expression: string }
  */
-export default function parseText (textNode) {
+function parseText (textNode) {
   const text = textNode.text
   const tokenText = text.replace(/\{\{([^}]+)\}\}/g, (_, exp) => `{{_s(${exp.trim()})}}`)
   const tokens = tokenText.split(/\{\{([^}]+)\}\}/)
@@ -13,4 +13,24 @@ export default function parseText (textNode) {
   
   textNode.expression = condenseWhiteSpace(expressions.join('+'))
   return textNode
+}
+
+const exec = (text, vars) => {
+  const expression = parseText({ text }).expression
+  return (new Function('vars', `
+    const _s = x =>
+      x === null 
+      ? ''
+      : x instanceof Object
+        ? JSON.stringify(x)
+        : String(x)
+    with (vars) {
+      return ${expression}
+    }
+  `))(vars)
+}
+
+export default {
+  parseText,
+  exec
 }
