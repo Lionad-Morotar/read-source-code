@@ -1,5 +1,5 @@
 /**
- * HTML Tokenizer
+ * HTML Parser
  * mostly a copy from vue.js
  */
 import utils from '../../utils/index.js'
