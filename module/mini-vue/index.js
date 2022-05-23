@@ -1,10 +1,15 @@
 import htmlParser from './compiler/htmlParser'
+import templateParser from './compiler/templateParser'
+import optimizer from './compiler/optimizer'
 
 function Vue(options) {
   const { template } = options
-  const ast = htmlParser(template)
+  const ast = optimizer(htmlParser(template, {
+    text: templateParser
+  }))
 
-  const nodes = document.createTextNode('testse')
+  const render = ast => document.createTextNode('TODO')
+  const nodes = render(ast)
 
   this.$mount = selector => {
     const el = document.querySelector(selector)

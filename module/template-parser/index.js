@@ -5,8 +5,8 @@
  */
 function parseText (textNode) {
   const text = textNode.text
-  const tokenText = text.replace(/\{\{([^}]+)\}\}/g, (_, exp) => `{{_s(${exp.trim()})}}`)
-  const tokens = tokenText.split(/\{\{([^}]+)\}\}/)
+  const tokenText = text.replace(/\{\{([^}]+)\}\}/g, (_, exp) => exp ? `{{_s(${exp.trim()})}}` : '')
+  const tokens = tokenText.split(/\{\{([^}]+)\}\}/).filter(Boolean)
   const expressions = tokens.map(x => x.startsWith('_s') ? x : JSON.stringify(x))
 
   const condenseWhiteSpace = txt => txt.replace(/\s+/g, ' ')

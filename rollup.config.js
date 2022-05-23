@@ -19,9 +19,10 @@ export default {
       require('rollup-plugin-generate-html-template')({
         template: path.join(inputFileDir, '/index.html'),
       }),
-    require('rollup-plugin-copy')({
-      targets: [{ src: inputFileDir + '/**/*', dest: outputDest }],
-    }),
+    // 忘了为啥要 copy 了，暂时禁用
+    // require('rollup-plugin-copy')({
+    //   targets: [{ src: inputFileDir + '/**/*', dest: outputDest }],
+    // }),
     runGulp && {
       name: 'run-gulp',
       buildEnd: async () => {

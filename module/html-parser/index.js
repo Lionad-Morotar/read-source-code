@@ -77,14 +77,14 @@ export default function parseHTML (html, parseHooks = {}) {
       
       if (text) {
         const node = handleText({ text })
-        if (!node?.data?.isComment) {
+        if (node && node.data && !node.data.isComment) {
           parseHooks.text && parseHooks.text(node)
         }
       }
     }
     else {
       const node = handleText({ text: html })
-      parseHooks.text && parseHooks.text(node)
+      node && parseHooks.text && parseHooks.text(node)
       break
     }
   } 

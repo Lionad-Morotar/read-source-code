@@ -34,14 +34,16 @@
       "patterns": [
         "data-structure/**/*",
         "utils/**/*",
-        "build/module/html-parser"
+        "build/module/html-parser",
+        "module/html-parser/test"
       ],
       "delay": 500
     },
     "test:template-parser": {
       "see": "https://github.com/M-Zuber/npm-watch/issues/91",
       "patterns": [
-        "build/module/template-parser"
+        "build/module/template-parser",
+        "module/template-parser/test"
       ],
       "delay": 500
     },
@@ -49,7 +51,9 @@
       "see": "https://github.com/M-Zuber/npm-watch/issues/91",
       "patterns": [
         "build/module/html-parser",
-        "build/module/mini-vue"
+        "build/module/template-parser",
+        "build/module/mini-vue",
+        "module/mini-vue/test"
       ],
       "delay": 500
     }
