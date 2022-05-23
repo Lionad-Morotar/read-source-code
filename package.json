@@ -13,6 +13,9 @@
     "module-html-parser": "cross-env RUN=1 INPUT=./module/html-parser/index.js rollup -c -w",
     "test-html-parser": "mocha ./module/html-parser/test/index.js",
     "watch:test-html-parser": "npm-watch test-html-parser",
+    "module-template-parser": "cross-env RUN=1 INPUT=./module/template-parser/index.js rollup -c -w",
+    "test-template-parser": "mocha ./module/template-parser/test/index.js",
+    "watch:test-template-parser": "npm-watch test-template-parser",
     "module-html-tokenizer": "cross-env RUN=1 INPUT=./module/html-tokenizer/index.js rollup -c -w",
     "module-react": "cross-env HTML=1 RUN=1 GULP=1 SERVE=1 INPUT=./module/react/index.js rollup -c -w",
     "polyfill-promise": "nodemon ./polyfill/promise/promise.js",
@@ -33,6 +36,14 @@
         "module/html-parser"
       ],
       "delay": 1000
+    },
+    "test-template-parser": {
+      "see": "https://github.com/M-Zuber/npm-watch/issues/91",
+      "patterns": [
+        "build/module/template-parser",
+        "module/template-parser"
+      ],
+      "delay": 1200
     }
   },
   "author": "Lionad",
