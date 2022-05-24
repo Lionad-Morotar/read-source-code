@@ -61,17 +61,17 @@
     window.onload = () => {
       const Vue = module
 
-      const template = `
+      let template = `
         <div class="counter">
           <p>Count result is: {{ count }}</p>
           <button :disable="count === 3">+</button>
           <button :disable="count === 0">-</button>
           <p>Click the buttons to add or dec the count number</p>
         </div>
+        <!-- hello comment -->
         <p>Hello, here's an test line.</p>
         <p>{{ count ? 'yes' : 'no' }}</p>
       `
-
       const vue = new Vue({
         template,
         methods: {

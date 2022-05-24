@@ -1,33 +1,33 @@
 function markStatic (node) {
-  const { tagName, expression } = node.data
-  if (tagName === 'text' && expression.match(/_s([^\)]*)/)) {
-    node.data.isStatic = false
+  const { tag, expression, children } = node
+  // TODO refactor
+  if (tag === 'text' && expression && expression.match(/_s([^\)]*)/)) {
+    node.isStatic = false
   } else {
-    node.data.isStatic = true
+    node.isStatic = true
   }
-  if (node.next) {
-    node.next.forEach(markStatic)
-    const hasDynamicChild = node.next.find(x => !x.data.isStatic)
+  if (children && children.length) {
+    node.children.forEach(markStatic)
+    const hasDynamicChild = children.find(x => !x.isStatic)
     if (hasDynamicChild) {
-      node.data.isStatic = false
+      node.isStatic = false
     }
   }
 }
 
 function markStaticRoot (node) {
-  if (node.data.isStatic) {
-    node.data.isStaticRoot = true
+  if (node.isStatic) {
+    node.isStaticRoot = true
     return
   }
-  if (node.next) {
-    node.next.forEach(markStaticRoot)
+  if (node.children && node.children.length) {
+    node.children.forEach(markStaticRoot)
   }
 }
 
-export default function optimizer (ast) {
+export default function optimize (ast) {
   const root = ast.root
   root.map(markStatic) 
   root.map(markStaticRoot)
-  console.log(root)
   return ast
 }
