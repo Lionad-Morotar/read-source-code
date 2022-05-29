@@ -1,10 +1,15 @@
-import initVueRender from './render'
-
+import initMixin from './init'
+import stateMixin from './state'
+import eventMixin from './event'
+import lifecycleMixin from './lifecycle'
+import renderMixin from './render'
+import runtimeMixin from '../runtime'
 import htmlParser from '../compiler/parser/html-parser'
 import templateParser from '../compiler/parser/template-parser'
 import optimize from '../compiler/optimizer'
 import generate from '../compiler/generator'
 
+// * for debug
 const renderText = any => {
   const $pre = document.createElement('pre')
   const $text = document.createTextNode(JSON.stringify(any, null, 4))
@@ -35,7 +40,9 @@ const renderVNodes = vnodes => {
   return vnodes.map(render)
 }
 
-function Vue(options) {
+function Vue(options = {}) {
+  this._init(options)
+
   const ast = htmlParser(options.template, { text: templateParser })
   optimize(ast)
   const code = generate(ast)
@@ -50,6 +57,10 @@ function Vue(options) {
   }
 }
 
-initVueRender(Vue)
+initMixin(Vue)
+stateMixin(Vue)
+eventMixin(Vue)
+lifecycleMixin(Vue)
+renderMixin(Vue)
  
 export default Vue

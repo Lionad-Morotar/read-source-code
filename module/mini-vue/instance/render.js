@@ -1,7 +1,17 @@
 import VNode from '../vdom/vnode'
 
-export default function initVueRender (Vue) {
+export function initRender (vm) {
+  vm._vnode = null
+}
+
+export default function renderMixin (Vue) {
   installRenderHelpers(Vue.prototype)
+
+  // Vue.prototype.$nextTick
+
+  Vue.prototype._render = function () {
+    return this.$options.render.call(this)
+  }
 }
 
 function installRenderHelpers (target) {
