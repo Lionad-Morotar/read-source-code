@@ -10,7 +10,9 @@ export default function renderMixin (Vue) {
   // Vue.prototype.$nextTick
 
   Vue.prototype._render = function () {
-    return this.$options.render.call(this)
+    const vnodes = this.$options.render.call(this)
+    this.$vnodes = vnodes
+    return vnodes
   }
 }
 

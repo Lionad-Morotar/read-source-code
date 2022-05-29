@@ -72,7 +72,7 @@
         <p>Hello, here's an test line.</p>
         <p>{{ count ? 'yes' : 'no' }}</p>
       `
-      const vue = new Vue({
+      const app = new Vue({
         template,
         methods: {
           handleClick() {
@@ -81,7 +81,7 @@
         },
       })
 
-      vue.$mount('#app')
+      app.$mount('#app')
     }
   </script>
 </html>
