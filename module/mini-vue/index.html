@@ -63,17 +63,23 @@
 
       let template = `
         <div class="counter">
-          <p>Count result is: {{ count }}</p>
+          <p>Count Result: {{ count }}</p>
           <button :disable="count === 3">+</button>
           <button :disable="count === 0">-</button>
-          <p>Click the buttons to add or dec the count number</p>
+          <p>Click "+" to add 1 to count, click "-" to dec 1.</p>
         </div>
         <!-- hello comment -->
-        <p>Hello, here's an test line.</p>
-        <p>{{ count ? 'yes' : 'no' }}</p>
+        <p>Count Status: {{ (count > 1) ? 'count > 1' : 'count !> 1' }}</p>
       `
+      const temp = ``
+
       const app = new Vue({
         template,
+        data () {
+          return {
+            count: 0
+          }
+        },
         methods: {
           handleClick() {
             console.log('handleClick')

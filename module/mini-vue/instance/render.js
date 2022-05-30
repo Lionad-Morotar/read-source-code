@@ -1,4 +1,5 @@
 import VNode from '../vdom/vnode'
+import { toString } from '../utils'
 
 export function initRender (vm) {
   vm._vnode = null
@@ -18,6 +19,7 @@ export default function renderMixin (Vue) {
 
 function installRenderHelpers (target) {
   target._c = createNode
+  target._s = toString
   target._text = createTextNode
   target._comment = createCommentNode
 }

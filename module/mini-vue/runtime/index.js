@@ -12,7 +12,9 @@ export default function runtimeMixin (Vue) {
     el = el && document.querySelector(el)
     this.$options.code = compileToFunctions(this.$options.template)
     this.$options.render = function () {
-      return new Function(this.$options.code).call(this)
+      console.log(this.$options.code)
+      const datas = Object.assign(this, this._data)
+      return new Function(this.$options.code).call(datas)
     }
     mountComponent.call(this, el)
   }

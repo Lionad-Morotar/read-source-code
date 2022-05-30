@@ -1,9 +1,9 @@
 // * for debug
-export const rednerText = any => {
+export const renderText = any => {
   const $pre = document.createElement('pre')
   const $text = document.createTextNode(JSON.stringify(any, null, 4))
   $pre.appendChild($text)
-  return $pre
+  return [$pre]
 }
 
 export const renderDOM = vnodes => {
@@ -30,6 +30,7 @@ export const renderDOM = vnodes => {
 }
 
 export default function patch ($els, oldVNode, VNode) {
+  // const doms = renderText(VNode)
   const doms = renderDOM(VNode)
   doms.map(x => $els.appendChild(x))
   return $els

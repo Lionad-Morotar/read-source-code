@@ -14,10 +14,11 @@ function genElement (astNode) {
 }
 
 function genText (astNode) {
+  const content = astNode.expression || JSON.stringify(astNode.text)
   if (astNode.isComment) {
-    return `_comment(${JSON.stringify(astNode.text)})`
+    return `_comment(${content})`
   } else {
-    return `_text(${JSON.stringify(astNode.text)})`
+    return `_text(${content})`
   }
 }
 
