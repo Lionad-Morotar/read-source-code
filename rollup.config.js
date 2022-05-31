@@ -12,6 +12,7 @@ const outputDest = `${outputDir}${inputFileDir}`
 
 export default {
   input: inputPath,
+  watch: true,
   plugins: [
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
@@ -47,9 +48,10 @@ export default {
     sourcemap: true,
   },
   watch: {
-    include: [
-      inputFileDir + '/**/*.js',
-      inputFileDir + '/index.html'
-    ]
+    chokidar: {
+      // FIXME HTML File is not watched
+      // @see https://github.com/rollup/rollup/issues/1828
+      paths: inputFileDir + '/**'
+    }
   },
 }
