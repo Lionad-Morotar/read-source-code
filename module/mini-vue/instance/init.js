@@ -7,7 +7,7 @@ let uid = 0
 
 export default function initMixin (Vue) {
   Vue.prototype._init = function (options) {
-    this._uid = uid++
+    this._uid = ++uid
     this._isVue = true
 
     this.$options = options

@@ -1,3 +1,5 @@
+import { observe } from '../observer/index.js'
+
 export function initState (vm) {
   vm._watchers = []
   const opts = vm.$options
@@ -13,7 +15,13 @@ export default function stateMixin (Vue) {
 }
 
 function initData (vm) {
-  const dataOpts = vm.$options.data
-  const data = dataOpts.call(vm)
+  const data = getData(vm)
   vm._data = data
+  observe(data)
+}
+
+function getData (vm) {
+  const dataOpts = vm.$options.data
+  const result = dataOpts.call(vm)
+  return result
 }

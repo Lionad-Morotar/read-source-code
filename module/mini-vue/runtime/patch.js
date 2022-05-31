@@ -30,6 +30,7 @@ export const renderDOM = vnodes => {
 }
 
 export default function patch ($els, oldVNode, VNode) {
+  $els.innerHTML = ''
   // const doms = renderText(VNode)
   const doms = renderDOM(VNode)
   doms.map(x => $els.appendChild(x))
