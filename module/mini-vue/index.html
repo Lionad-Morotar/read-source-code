@@ -65,8 +65,8 @@
         <div class="counter">
           <p>Count Result: {{ count }}</p>
           <div v-if="!autoAddTip">
-            <button :disable="count === 3">+</button>
-            <button :disable="count === 0">-</button>
+            <button :disabled="count === 3">+</button>
+            <button :disabled="count === 0">-</button>
             <p>Click "+" to add 1 to count, click "-" to dec 1.</p>
           </div>
         </div>
@@ -92,13 +92,13 @@
 
       app.$mount('#app')
 
-      const task_add3 = setInterval(() => {
-        app._data.count += 1
-      }, 500)
-      const task_clearTasks = setTimeout(() => {
-        window.clearInterval(task_add3)
-        app._data.autoAddTip = false
-      }, 1500)
+      // const task_add3 = setInterval(() => {
+      //   app._data.count += 1
+      // }, 500)
+      // const task_clearTasks = setTimeout(() => {
+      //   window.clearInterval(task_add3)
+      //   app._data.autoAddTip = false
+      // }, 1500)
     }
   </script>
 </html>

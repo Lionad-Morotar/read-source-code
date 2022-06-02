@@ -1,5 +1,5 @@
 import VNode from '../vdom/vnode'
-import { toString } from '../utils'
+import { toString, isBooleanAttr } from '../utils'
 
 export function initRender (vm) {
   vm._vnode = null
@@ -22,6 +22,7 @@ function installRenderHelpers (target) {
   target._s = toString
   target._text = createTextNode
   target._comment = createCommentNode
+  target._d = dynamicProp
 }
 
 function createNode (tag, data, children) {
@@ -38,4 +39,12 @@ function createCommentNode (text) {
   const node = createTextNode(text)
   node.isComment = true
   return node
+}
+
+function dynamicProp(obj, values) {
+  // console.log(obj, values)
+  for (let i = 0, l = values.length; i < l; i += 2) {
+    obj[values[i]] = values[i + 1]
+  }
+  return obj
 }

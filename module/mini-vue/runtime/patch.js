@@ -1,3 +1,5 @@
+import { isBooleanAttr } from "../utils/index.js"
+
 // * for debug
 export const renderText = any => {
   const $pre = document.createElement('pre')
@@ -14,11 +16,17 @@ export const renderDOM = vnodes => {
         : document.createTextNode(vnode.text)
     }
     const $el = document.createElement(vnode.tag)
+    // console.log(this)
     if (vnode.data) {
-      const { attrs } = vnode.data
-      if (attrs) {
-        Object.entries(attrs).map(([k, v]) => $el.setAttribute(k, v))
-      }
+      const { attrs = {} } = vnode.data
+      console.log(vnode.tag, vnode.data)
+      Object.entries(attrs).map(([k, v]) => {
+        if (isBooleanAttr(k)) {
+          v && $el.setAttribute(k, v)
+        } else {
+          $el.setAttribute(k, v)
+        }
+      })
     }
     if (vnode.children && vnode.children.length) {
       const $children = vnode.children.map(render)
@@ -32,7 +40,7 @@ export const renderDOM = vnodes => {
 export default function patch ($els, oldVNode, VNode) {
   $els.innerHTML = ''
   // const doms = renderText(VNode)
-  const doms = renderDOM(VNode)
+  const doms = renderDOM.bind(this)(VNode)
   doms.map(x => $els.appendChild(x))
   return $els
 }

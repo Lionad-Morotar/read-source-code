@@ -22,18 +22,33 @@ function genText (astNode) {
   }
 }
 
+/**
+ * VNode 数据对象详细配置
+ * @see https://cn.vuejs.org/v2/guide/render-function.html#%E6%B7%B1%E5%85%A5%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1
+ */
 function genData (astNode) {
   let data = ''
-  astNode.attrs && (data += `attrs:{${genProps(astNode.attrs)}}`)
+  astNode.attrs && (data += `attrs:${genProps(astNode.attrs)}`)
   return data ? `{${data}}` : ''
 }
 
-function genProps (attrs) {
-  let props = ''
-  Object.entries(attrs).map(([k,v]) => {
-    props += `${JSON.stringify(k)}:${JSON.stringify(v)},`
+function genProps (props) {
+  let staticContent = ''
+  let dynamicContent = ''
+  Object.entries(props).map(([k,v]) => {
+    if (k.startsWith(':')) {
+      dynamicContent += `"${k.slice(1)}",${v},`
+    } else {
+      staticContent += `"${k}":${JSON.stringify(v)},`
+    }
   })
-  return props.replace(/,$/, '')
+  staticContent = staticContent.replace(/,$/, '')
+  dynamicContent = dynamicContent.replace(/,$/, '')
+  if (dynamicContent) {
+    return `_d({${staticContent}}, [${dynamicContent}])`
+  } else {
+    return `{${staticContent}}`
+  }
 }
 
 function genChildren (astNode) {

@@ -1,3 +1,5 @@
+export * from './attr.js'
+
 export function noop () {
   /* do nothing */
 }
