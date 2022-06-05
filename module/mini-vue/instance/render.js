@@ -1,5 +1,5 @@
 import VNode from '../vdom/vnode'
-import { toString, isBooleanAttr } from '../utils'
+import { toString } from '../utils'
 
 export function initRender (vm) {
   vm._vnode = null
@@ -11,9 +11,7 @@ export default function renderMixin (Vue) {
   // Vue.prototype.$nextTick
 
   Vue.prototype._render = function () {
-    const vnodes = this.$options.render.call(this)
-    this.$vnodes = vnodes
-    return vnodes
+    return this.$vnodes = this.$options.render.call(this)
   }
 }
 
@@ -26,6 +24,7 @@ function installRenderHelpers (target) {
 }
 
 function createNode (tag, data, children) {
+  // console.log(tag, data)
   return new VNode(tag, data, children)
 }
 

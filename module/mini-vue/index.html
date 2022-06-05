@@ -63,17 +63,17 @@
 
       let template = `
         <div class="counter">
-          <p>Count Result: {{ count }}</p>
+          <p>Count Result: {{ this.count }}</p>
           <div v-if="!autoAddTip">
-            <button :disabled="count === 3">+</button>
-            <button :disabled="count === 0">-</button>
+            <button :disabled="this.count >= 3" @click="() => this.count++">+</button>
+            <button :disabled="this.count <= 0" @click="() => this.count--">-</button>
             <p>Click "+" to add 1 to count, click "-" to dec 1.</p>
           </div>
         </div>
         <!-- hello comment -->
-        <p>Count Status: {{ (count > 1) ? 'count > 1' : 'count !> 1' }}</p>
+        <p>Count Status: {{ (this.count > 1) ? 'count > 1' : 'count !> 1' }}</p>
       `
-      const temp = ``
+      // template = ``
 
       const app = new Vue({
         template,
@@ -89,8 +89,13 @@
           },
         },
       })
+      console.log(app)
 
       app.$mount('#app')
+
+      setTimeout(() => {
+        // app._data.count = 3
+      }, 1000)
 
       // const task_add3 = setInterval(() => {
       //   app._data.count += 1

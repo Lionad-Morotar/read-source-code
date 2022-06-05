@@ -4,6 +4,10 @@ export function noop () {
   /* do nothing */
 }
 
+export function info (msg) {
+  console.info(`[VUE] ${msg}`)
+}
+
 export function error (msg) {
   throw new Error(`[VUE] ${msg}`)
 }

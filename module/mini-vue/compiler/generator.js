@@ -1,3 +1,5 @@
+import { error } from '../utils'
+
 export default function generate (ast) {
   const root = ast.root
   const code = root.map(genElement)
@@ -28,7 +30,8 @@ function genText (astNode) {
  */
 function genData (astNode) {
   let data = ''
-  astNode.attrs && (data += `attrs:${genProps(astNode.attrs)}`)
+  astNode.attrs && (data += `attrs:${genProps(astNode.attrs)},`)
+  astNode.events && (data += `events:${genHandlers(astNode.events)},`)
   return data ? `{${data}}` : ''
 }
 
@@ -48,6 +51,27 @@ function genProps (props) {
     return `_d({${staticContent}}, [${dynamicContent}])`
   } else {
     return `{${staticContent}}`
+  }
+}
+
+function genHandlers (props) {
+  let dynamicContent = ''
+  Object.entries(props).map(([k,v]) => {
+    const handler = genHandler(v)
+    dynamicContent += `"${k}",${handler},`
+  })
+  dynamicContent = dynamicContent.replace(/,$/, '')
+  return `_d({}, [${dynamicContent}])`
+}
+
+function genHandler (evtTemplate) {
+  const fnRegex = /^\([^)]*?\)\s*=>|function\s+\([^)]*?\)\s*\{[^}]*?\}/
+  const isFnExp = fnRegex.test(evtTemplate)
+  if (isFnExp) {
+    return evtTemplate
+  } else {
+    error('wrong event')
+    return '()=>{}'
   }
 }
 

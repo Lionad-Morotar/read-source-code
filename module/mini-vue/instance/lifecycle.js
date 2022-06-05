@@ -1,5 +1,5 @@
 import Watcher from '../observer/watcher'
-import { noop } from '../utils'
+import { noop, info } from '../utils'
 
 export function initLifecycle (vm) {
   const options = vm.$options
@@ -42,14 +42,20 @@ export default function lifecycleMixin (Vue) {
 
 export function mountComponent (el) {
   this.$els = el
-  const updateComponent = () => this._update(this._render())
+  const updateComponent = () => {
+    info('beforeUpdate')
+    this._update(this._render())
+  }
   callHook(this, 'beforeMount')
-  this._watcher = new Watcher(this, updateComponent, noop, {
-    before () {
-      callHook(this, 'beforeUpdate')
-    }
-  })
-  this._watchers.push(this._watcher)
+  if (!this._wathcer) {
+    this._watcher = new Watcher(this, updateComponent, noop, {
+      // before () {
+      //   info('beforeUpdate')
+      //   callHook(this, 'beforeUpdate')
+      // }
+    })
+    this._watchers.push(this._watcher)
+  }
   updateComponent()
   callHook(this, 'mounted')
   return this

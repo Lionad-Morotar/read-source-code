@@ -132,7 +132,9 @@ export default function parseHTML (html, parseHooks = {}) {
     } else {
       root.push(node)
     }
-    if (!nodeData.isUnary) {
+    if (nodeData.isUnary) {
+      parseHooks.end && parseHooks.end(node)
+    } else {
       stack.push(node)
     }
   }
@@ -188,15 +190,16 @@ export default function parseHTML (html, parseHooks = {}) {
     return html.match(endTagRegex)
   }
 
-  function handleEndTag (endTagMatch) {
-    const [all, tagName] = endTagMatch
+  function handleEndTag (nodeData) {
+    const [all, tagName] = nodeData
     const last = getLast()
     if (last) {
       if (!tagName === last.data.tagName) {
         throw new Error('[HTML Parser] end tag mismatch')
       }
-      stack.pop()
+      const lastNode = stack.pop()
       advance(all.length)
+      parseHooks.end && parseHooks.end(lastNode)
     }
   }
 
