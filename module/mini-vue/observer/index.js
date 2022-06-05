@@ -26,6 +26,8 @@ export class Observer {
 export function observe (value) {
   if ((value instanceof Object) || Array.isArray(value)) {
     return value.__ob__ || new Observer(value)
+  } else {
+    return null
   }
 }
 

@@ -6,7 +6,7 @@ export default class Dep {
     this.subs = []
   }
   addSub (watcher) {
-    this.subs.push(watcher)
+    !this.subs.includes(watcher) && this.subs.push(watcher)
   }
   removeSub (watcher) {
     const index = this.subs.indexOf(watcher)
