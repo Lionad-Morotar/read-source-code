@@ -60,6 +60,31 @@
   <script>
     window.onload = () => {
       const Vue = module
+      let sectionCount = 1
+      const createSection = (msg, vue, titleTag = 'h2') => {
+        const $app = document.querySelector('#app')
+        const $title = document.createElement(titleTag)
+        const $content = document.createElement('div')
+        $title.setAttribute('class', `section-${sectionCount}`)
+        $content.setAttribute('class', `section-content-${sectionCount}`)
+        $title.innerText = msg
+        $app.appendChild($title)
+        $app.appendChild($content)
+        vue  && $content.appendChild(vue.$el)
+        sectionCount++
+        return $content
+      }
+
+      createSection('E2E Test Cases', undefined, 'h1')
+
+      const $con = createSection('# multy root template')
+      new Vue({
+        template: `
+          <div><h3>Root NO. 1</h3> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
+          <div><h3>Root NO. 2</h3> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
+          <div><h3>Root NO. 3</h3> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
+        `
+      }).$mount($con)
 
       let template = `
         <div class="counter">
@@ -91,7 +116,7 @@
       })
       console.log(app)
 
-      app.$mount('#app')
+      // app.$mount('#app')
 
       setTimeout(() => {
         // app._data.count = 3

@@ -12,13 +12,13 @@ export default function initMixin (Vue) {
     this._renderProxy = new Proxy(this, {
       get (target, key) {
         const data = target._data
-        return data.hasOwnProperty(key)
+        return data && data.hasOwnProperty(key)
           ? data[key]
           : target[key]
       },
       set (target, key, value) {
         const data = target._data
-        data.hasOwnProperty(key)
+        data && data.hasOwnProperty(key)
           ? (data[key] = value)
           : (target[key] = value)
       }

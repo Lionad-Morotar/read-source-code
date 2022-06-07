@@ -41,6 +41,7 @@ export default function lifecycleMixin (Vue) {
 }
 
 export function mountComponent (el) {
+  
   this.$els = el
   const updateComponent = () => {
     info('beforeUpdate')

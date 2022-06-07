@@ -21,7 +21,7 @@ function initData (vm) {
 }
 
 function getData (vm) {
-  const dataOpts = vm.$options.data
+  const dataOpts = vm.$options.data || (() => ({}))
   const result = dataOpts.call(vm)
   return result
 }

@@ -9,7 +9,9 @@ export default function runtimeMixin (Vue) {
   Vue.prototype.__patch__ = patch
 
   Vue.prototype.$mount = function (el) {
-    el = el && document.querySelector(el)
+    el = el instanceof String
+      ? document.querySelector(el)
+      : el
     this.$options.code = compileToFunctions(this.$options.template)
     this.$options.render = function () {
       return new Function(this.$options.code).call(this._renderProxy)
