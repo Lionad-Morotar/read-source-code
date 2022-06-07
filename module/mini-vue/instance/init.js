@@ -9,20 +9,7 @@ export default function initMixin (Vue) {
   Vue.prototype._init = function (options) {
     this._uid = ++uid
     this._isVue = true
-    this._renderProxy = new Proxy(this, {
-      get (target, key) {
-        const data = target._data
-        return data && data.hasOwnProperty(key)
-          ? data[key]
-          : target[key]
-      },
-      set (target, key, value) {
-        const data = target._data
-        data && data.hasOwnProperty(key)
-          ? (data[key] = value)
-          : (target[key] = value)
-      }
-    })
+    this._renderProxy = this
 
     this.$options = options
     

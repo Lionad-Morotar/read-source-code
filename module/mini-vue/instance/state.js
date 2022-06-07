@@ -18,6 +18,18 @@ function initData (vm) {
   const data = getData(vm)
   vm._data = data
   observe(data)
+  Object.keys(data).map(key => {
+    Object.defineProperty(vm, key, {
+      enumerable: true,
+      configurable: true,
+      get () {
+        return data[key]
+      },
+      set (nv) {
+        data[key] = nv
+      }
+    })
+  })
 }
 
 function getData (vm) {

@@ -127,33 +127,36 @@
         }), arguments.callee)
       })
 
-      only(function () {
+      test(function () {
         const vue = createSection('# template value binding', new Vue({
-          template: `<div>Count: {{ count }}</div>`,
+          template: `
+            <div>Count: {{ count }}</div>
+            <div>Another Count: {{ this.count }}</div>
+          `,
           data () { return { count: 990 } }
         }), arguments.callee)
-        setInterval(() => vue._data.count++, 1000)
+        setInterval(() => vue.count += 1, 1000)
       })
 
       test(function () {
         const vue = createSection('# DOM prop binding', new Vue({
           template: `
-            <p>Switch Result: {{ this.switch }}</p>
-            <button :disabled="!this.switch">{{ this.switch ? 'button' : 'disabled' }}</button>
-            <button :disabled="this.switch">{{ !this.switch ? 'button' : 'disabled' }}</button>
+            <p>Switch Result: {{ switchValue }}</p>
+            <button :disabled="!switchValue">{{ switchValue ? 'button' : 'disabled' }}</button>
+            <button :disabled="switchValue">{{ !switchValue ? 'button' : 'disabled' }}</button>
           `,
-          data () { return { switch: true } }
+          data () { return { switchValue: true } }
         }), arguments.callee)
-        setInterval(() => vue._data.switch  = !vue._data.switch, 2000)
+        setInterval(() => vue.switchValue  = !vue.switchValue, 2000)
       })
 
       test(function () {
         const vue = createSection('# DOM event', new Vue({
           template: `
-            <p>Count Result: {{ this.count }}</p>
+            <p>Count Result: {{ count }}</p>
             <p>Click "+" to add 1, "-" to dec 1.</p>
-            <button @click="() => this.count++">+</button>
-            <button @click="() => this.count--">-</button>
+            <button @click="() => count++">+</button>
+            <button @click="() => count--">-</button>
           `,
           data () { return { count: 1 } }
         }), arguments.callee)

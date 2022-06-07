@@ -3,7 +3,7 @@ import { error } from '../utils'
 export default function generate (ast) {
   const root = ast.root
   const code = root.map(genElement)
-  return `with(this){return [${code}]}`
+  return `with (this) { return [${code}] }`
 }
 
 function genElement (astNode) {
