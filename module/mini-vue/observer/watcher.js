@@ -34,7 +34,10 @@ export default class Watcher {
     this.deps.add(dep)
     dep.addSub(this)
   }
-  tearDoen () {
-    // TODO
+  teardown () {
+    [...this.deps].map(dep => {
+      dep.removeSub(this)
+    })
+    this.deps.clear()
   }
 }

@@ -204,6 +204,14 @@
             }
           }
         }), arguments.callee)
+
+        let logTimes = 0
+        let unWatch = vue.$watch('count', () => {
+          console.log('count changed !')
+          if (++logTimes === 3) {
+            unWatch()
+          }
+        })
       })
     }
   </script>
