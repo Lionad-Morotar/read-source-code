@@ -1,4 +1,5 @@
 import { observe } from '../observer/index.js'
+import Watcher from '../observer/watcher.js'
 
 export function initState (vm) {
   vm._watchers = []
@@ -12,7 +13,13 @@ export function initState (vm) {
 export default function stateMixin (Vue) {
   // Vue.prototype.$set = set
   // Vue.prototype.$delete = del
-  // Vue.prototype.$watch = watch  
+  Vue.prototype.$watch = function watch (expOrFn, cb) {
+    const watcher = new Watcher(this, expOrFn, cb)
+    this._watchers.push(watcher)
+    return function unWatch () {
+      watcher.teardown()
+    }
+  }
 }
 
 function initData (vm) {
@@ -56,7 +63,7 @@ function initMethods (vm) {
 }
 
 function initWatch (vm) {
-  Object.entries(vm.$options.watch).map(([k, v]) => {
-    // TODO
+  Object.entries(vm.$options.watch).map(([key, callback]) => {
+    vm.$watch(key, callback)
   })
 }

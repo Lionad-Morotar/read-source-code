@@ -3,11 +3,11 @@ import { pushTarget, popTarget } from './dep'
 let uid = 0
 
 export default class Watcher {
-  constructor (vm, fn, callback, options) {
+  constructor (vm, expOrFn, callback, options) {
     this.id = ++uid
     this.vm = vm
-    this.options = options
-    this.getter = fn
+    this.options = options || {}
+    this.expOrFn = expOrFn
     this.cb = callback
     this.deps = new Set()
     this.value = this.get()
@@ -15,16 +15,18 @@ export default class Watcher {
   get () {
     let value = null
     pushTarget(this)
-    value = this.getter.call(this.vm, this.vm)
+    value = this.expOrFn instanceof Function
+      ? this.expOrFn.call(this.vm, this.vm)
+      : this.vm[this.expOrFn]
     popTarget(this)
     return value
   }
   update () {
     const oldValue = this.value
-    const newValue = this.get()
-    if (oldValue !== newValue) {
+    this.value = this.get()
+    if (oldValue !== this.value) {
       this.options.before && this.options.before.call(this.vm)
-      this.cb.call(this.vm, newValue, oldValue)
+      this.cb.call(this.vm, this.value, oldValue)
       this.options.after && this.options.after.call(this.vm)
     }
   }

@@ -162,7 +162,7 @@
         }), arguments.callee)
       })
 
-      only(function () {
+      test(function () {
         const vue = createSection('# method binding', new Vue({
           template: `
             <button :disabled="disabled">button</button>
@@ -184,27 +184,27 @@
         }), arguments.callee)
       })
 
-      // test(function () {
-      //   const vue = createSection('# watch', new Vue({
-      //     template: `
-      //       <p>Count Result: {{ count }}</p>
-      //       <button @click="() => count++">+</button>
-      //       <button @click="() => count--">-</button>
-      //       <p>Button Pressed: {{ buttonClickCount }} times</p>
-      //     `,
-      //     data () {
-      //       return {
-      //         count: 1,
-      //         buttonClickCount: 0
-      //       }
-      //     },
-      //     watch: {
-      //       count (val) {
-      //         this.buttonClickCount += 1
-      //       }
-      //     }
-      //   }), arguments.callee)
-      // })
+      only(function () {
+        const vue = createSection('# watch', new Vue({
+          template: `
+            <p>Count Result: {{ count }}</p>
+            <p>Button Pressed: {{ buttonClickCount }} times</p>
+            <button @click="() => count++">+</button>
+            <button @click="() => count--">-</button>
+          `,
+          data () {
+            return {
+              count: 1,
+              buttonClickCount: 0
+            }
+          },
+          watch: {
+            count (newValue, oldValue) {
+              this.buttonClickCount += 1
+            }
+          }
+        }), arguments.callee)
+      })
     }
   </script>
 </html>
