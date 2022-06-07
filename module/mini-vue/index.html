@@ -58,33 +58,51 @@
     <div id="app"></div>
   </body>
   <script>
+    function dedent (str) {
+      const minCount = Math.min(...str
+        .match(/(\r?\n)(\s+)/g)
+        .map(x => x.slice(1))
+        .map(x => x.length)
+      )
+      return str.replace(new RegExp(`(\\r?\\n)(\\s{${minCount}})`, 'g'), '$1')
+    }
+
     window.onload = () => {
       const Vue = module
       let sectionCount = 1
-      const createSection = (msg, vue, titleTag = 'h2') => {
+      const createSection = (msg, vue, pre, titleTag = 'h2') => {
         const $app = document.querySelector('#app')
-        const $title = document.createElement(titleTag)
         const $content = document.createElement('div')
-        $title.setAttribute('class', `section-${sectionCount}`)
-        $content.setAttribute('class', `section-content-${sectionCount}`)
+        const $vmount = document.createElement('div')
+        const $title = document.createElement(titleTag)
+
+        $content.setAttribute('class', `section-content-${sectionCount++}`)
         $title.innerText = msg
-        $app.appendChild($title)
+
         $app.appendChild($content)
-        vue  && $content.appendChild(vue.$el)
-        sectionCount++
-        return $content
+        $content.appendChild($title)
+        $content.appendChild($vmount)
+        vue  && vue.$mount($vmount)
+        if (pre) {
+          const $pre = document.createElement('pre')
+          $pre.innerText = pre ? dedent(String(pre)) : ''
+          $content.appendChild($pre)
+        }
       }
 
-      createSection('E2E Test Cases', undefined, 'h1')
+      createSection('E2E Test Cases', undefined, undefined, 'h1')
 
-      const $con = createSection('# multy root template')
-      new Vue({
-        template: `
-          <div><h3>Root NO. 1</h3> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
-          <div><h3>Root NO. 2</h3> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
-          <div><h3>Root NO. 3</h3> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
-        `
-      }).$mount($con)
+      ;(function createSection1 () {
+        createSection('# multy root template', new Vue({
+          template: `
+            <div><h5>Root NO. 1</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
+            <div><h5>Root NO. 2</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
+            <div><h5>Root NO. 3</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
+          `
+        }), createSection1)
+      })()
+
+      // $con = createSection('# multy')
 
       let template = `
         <div class="counter">
