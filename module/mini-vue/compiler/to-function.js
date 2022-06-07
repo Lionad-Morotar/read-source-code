@@ -5,6 +5,6 @@ import generate from './generator.js'
 export function compileToFunctions (template) {
   const ast = parse(template)
   const optimizedAST = optimize(ast)
-  const fnCode = generate(optimizedAST)
+  const fnCode = generate.bind(this)(optimizedAST)
   return fnCode
 }

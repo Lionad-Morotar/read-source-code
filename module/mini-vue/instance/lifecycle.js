@@ -1,5 +1,5 @@
 import Watcher from '../observer/watcher'
-import { noop, info } from '../utils'
+import { noop } from '../utils'
 
 export function initLifecycle (vm) {
   const options = vm.$options
@@ -44,7 +44,7 @@ export function mountComponent (el) {
   
   this.$els = el
   const updateComponent = () => {
-    info('beforeUpdate')
+    this.$info('beforeUpdate')
     this._update(this._render())
   }
   callHook(this, 'beforeMount')

@@ -1,8 +1,12 @@
 import { error } from '../utils'
 
+let curVM = null
+
 export default function generate (ast) {
+  curVM = this
   const root = ast.root
   const code = root.map(genElement)
+  curVM = null
   return `with (this) { return [${code}] }`
 }
 
@@ -69,9 +73,10 @@ function genHandler (evtTemplate) {
   const isFnExp = fnRegex.test(evtTemplate)
   if (isFnExp) {
     return evtTemplate
+  } else if (curVM.hasOwnProperty(evtTemplate)) {
+    return `() => ${evtTemplate}()`
   } else {
     error('wrong event')
-    return '()=>{}'
   }
 }
 

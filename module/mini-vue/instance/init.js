@@ -3,9 +3,12 @@ import { initEvent } from './event'
 import { initRender } from './render'
 import { initLifecycle, callHook } from './lifecycle'
 
+import { info } from '../utils'
+
 let uid = 0
 
 export default function initMixin (Vue) {
+
   Vue.prototype._init = function (options) {
     this._uid = ++uid
     this._isVue = true
@@ -20,4 +23,9 @@ export default function initMixin (Vue) {
     initState(this)
     callHook(this, 'created')
   }
+
+  Vue.prototype.$info = function (...args) {
+    this.$options.info && info(...args)
+  }
+
 }

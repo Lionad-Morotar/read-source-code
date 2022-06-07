@@ -12,7 +12,7 @@ export default function runtimeMixin (Vue) {
     el = el instanceof String
       ? document.querySelector(el)
       : el
-    this.$options.code = compileToFunctions(this.$options.template)
+    this.$options.code = compileToFunctions.bind(this)(this.$options.template)
     this.$options.render = function () {
       return new Function(this.$options.code).call(this._renderProxy)
     }
