@@ -1,4 +1,4 @@
-import { observe } from '../observer/index.js'
+import { defineReactive, observe } from '../observer/index.js'
 import Watcher from '../observer/watcher.js'
 
 export function initState (vm) {
@@ -11,8 +11,10 @@ export function initState (vm) {
 }
 
 export default function stateMixin (Vue) {
-  // Vue.prototype.$set = set
-  // Vue.prototype.$delete = del
+  
+  Vue.prototype.$set = set
+  Vue.prototype.$del = del
+
   Vue.prototype.$watch = function watch (expOrFn, cb) {
     const watcher = new Watcher(this, expOrFn, cb)
     this._watchers.push(watcher)
@@ -66,4 +68,20 @@ function initWatch (vm) {
   Object.entries(vm.$options.watch).map(([key, callback]) => {
     vm.$watch(key, callback)
   })
+}
+
+function set (target, key, val) {
+  const ob = observe(target)
+  Array.isArray(target)
+    ? target.splice(key, 1, val)
+    : defineReactive(ob.value, key, val)
+  ob.dep.notify()
+}
+
+function del (target, key) {
+  const ob = observe(target)
+  Array.isArray(target)
+    ? target.splice(key, 1)
+    : delete ob.value[key]
+  ob.dep.notify()
 }

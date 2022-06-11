@@ -41,7 +41,7 @@ export function defineReactive(obj, k, v) {
       dep.depend()
       if (childValue) {
         childValue.dep.depend()
-        Array.isArray(value) && dependArray(value)
+        Array.isArray(v) && dependArray(v)
       }
       return v
     },

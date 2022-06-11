@@ -128,10 +128,10 @@
       })
 
       test(function () {
-        const vue = createSection('# template value binding', new Vue({
+        const vue = createSection('# reactive binding', new Vue({
           template: `
-            <div>Count: {{ count }}</div>
-            <div>Another Count: {{ this.count }}</div>
+            <div>count: {{ count }}</div>
+            <div>this.count: {{ this.count }}</div>
           `,
           data () { return { count: 990 } }
         }), arguments.callee)
@@ -163,6 +163,95 @@
       })
 
       test(function () {
+        const vue = createSection('# $set', new Vue({
+          template: `
+            <div>
+              <span>My Toy: {{ toys }}</span>
+              <div>
+                <button @click="fixToy3">simply fix toy 3</button>
+                <button @click="anotherMethodToFixToy3">another method to fix toy3</button>
+                <button @click="yetAnotherMethodToFixToy3">yet another method to fix toy3</button>
+                <button @click="reset">reset</button>
+              </div>
+            </div>
+          `,
+          data () {
+            return {
+              toys: [
+                {name: 'toy1'}, 
+                {name: 'toy2'}, 
+                {name: 'toy4'}, 
+                {name: 'toy4'},
+              ]
+            }
+          },
+          methods: {
+            fixToy3 () {
+              this.toys = [
+                {name: 'toy1'}, 
+                {name: 'toy2'}, 
+                {name: 'toy3'}, 
+                {name: 'toy4'},
+              ]
+            },
+            anotherMethodToFixToy3 () {
+              this.$set(this.toys, 2, {name: 'toy3'})
+            },
+            yetAnotherMethodToFixToy3 () {
+              this.$set(this.toys[2], 'name', 'toy3')
+            },
+            reset () {
+              this.toys = [
+                {name: 'toy1'}, 
+                {name: 'toy2'}, 
+                {name: 'toy4'}, 
+                {name: 'toy4'},
+              ]
+            }
+          }
+        }), arguments.callee)
+        setInterval(() => vue.count += 1, 1000)
+      })
+
+      only(function () {
+        const vue = createSection('# $del', new Vue({
+          template: `
+            <div>
+              <span>My Toy: {{ toys }}</span>
+              <div>
+                <button @click="deleteWrongToy">delete wrong toy</button>
+                <button @click="reset">reset</button>
+              </div>
+            </div>
+          `,
+          data () {
+            return {
+              toys: [
+                {name: 'toy1'}, 
+                {name: 'toy2'}, 
+                {name: 'toy4'}, 
+                {name: 'toy4'},
+              ]
+            }
+          },
+          methods: {
+            deleteWrongToy () {
+              this.$del(this.toys, 2)
+            },
+            reset () {
+              this.toys = [
+                {name: 'toy1'}, 
+                {name: 'toy2'}, 
+                {name: 'toy4'}, 
+                {name: 'toy4'},
+              ]
+            }
+          }
+        }), arguments.callee)
+        setInterval(() => vue.count += 1, 1000)
+      })
+
+      test(function () {
         const vue = createSection('# method binding', new Vue({
           template: `
             <button :disabled="disabled">button</button>
@@ -184,7 +273,7 @@
         }), arguments.callee)
       })
 
-      only(function () {
+      test(function () {
         const vue = createSection('# watch', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
@@ -201,6 +290,21 @@
           watch: {
             count (newValue, oldValue) {
               this.buttonClickCount += 1
+            }
+          }
+        }), arguments.callee)
+      })
+
+      test(function () {
+        const vue = createSection('# $watch & unwatch', new Vue({
+          template: `
+            <p>Count Result: {{ count }}</p>
+            <button @click="() => count++">+</button>
+            <button @click="() => count--">-</button>
+          `,
+          data () {
+            return {
+              count: 1
             }
           }
         }), arguments.callee)
