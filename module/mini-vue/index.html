@@ -138,10 +138,10 @@
         setInterval(() => vue.count += 1, 1000)
       })
 
-      only(function () {
+      test(function () {
         const vue = createSection('# filter', new Vue({
           template: `
-            <div>count: {{ count | double | multiple(3) }}</div>
+            <div :id="count | prefix('id_')">count: {{ count | double | multiple(3) }}</div>
           `,
           data () {
             return {
@@ -149,6 +149,9 @@
             }
           },
           filters: {
+            prefix (value, prefix) {
+              return prefix + value
+            },
             double (value) {
               return +value * 2
             },

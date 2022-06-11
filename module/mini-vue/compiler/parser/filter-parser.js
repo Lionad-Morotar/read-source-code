@@ -3,7 +3,18 @@ var fnCallRegexRaw = `(${varRegexRaw})\\(([^)]*)\\)`
 var varRegex = new RegExp(varRegexRaw)
 var fnCallRegex = new RegExp(fnCallRegexRaw)
 var filterRegex = new RegExp(`_s\\(${varRegexRaw}(\\s*\\|\\s*(${varRegexRaw}|${fnCallRegexRaw})\\s*)*\\)`, 'g')
+var hasFilterRegex = new RegExp(`_s\\(${varRegexRaw}(\\s*\\|\\s*(${varRegexRaw}|${fnCallRegexRaw})\\s*)+\\)`, 'g')
 
+export function hasFilterExpression (str) {
+  return hasFilterRegex.test(str)
+}
+
+/**
+ * @example
+ * input: '_s(a | b | c("hello"))'
+ * output: '_s(_f("c")(_f("b")(a)), "hello")'
+ * see more about _f: installRenderHelpers @/instance/render.js
+ */
 export default function filterParser (text) {
   const target = text.match(filterRegex)
   if (target) {
