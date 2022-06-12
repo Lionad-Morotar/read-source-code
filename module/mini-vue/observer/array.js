@@ -1,7 +1,7 @@
 import { define } from '../utils'
 
 const proto = Array.prototype
-const extendedProto = Object.create(proto)
+export const extendedProto = Object.create(proto)
 
 const methodsToPatch = [
   'push',
@@ -15,7 +15,8 @@ const methodsToPatch = [
 
 methodsToPatch.map(method => {
   const raw = proto[method]
-  define(extendProto, method, function (...args) {
+  define(extendedProto, method, function (...args) {
+    console.log('args:', args)
     const result = raw.apply(this, args)
     const ob = this.__ob__
     let inserted
@@ -31,7 +32,7 @@ methodsToPatch.map(method => {
     inserted && ob.walkReactive(inserted)
     ob.dep.notify()
     return result
-  })
+  }, true)
 })
 
 export default function extendProto (value) {
