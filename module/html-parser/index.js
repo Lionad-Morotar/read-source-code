@@ -13,7 +13,7 @@ const tagNameRegex = '[a-zA-Z_][-.0-9_a-zA-Z]*'
 const startTagOpenRegex = new RegExp('^<(' + tagNameRegex + ')')
 const startTagCloseRegex = /^\s*(\/?)>/
 const endTagRegex = new RegExp('^<\\/(' + tagNameRegex + ')>')
-const attributeRegex = /^\s*([^\s"'<>\/=]+)\s*=\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+))?/
+const attributeRegex = /^\s*([^\s"'<>\/=]+)(?:\s*=\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+))?)?/
 const commentRegex = /^<!--/
 
 // const isPlainTextElement = utils.makeMapFn('script,style,textarea'.split(','))
@@ -104,7 +104,7 @@ export default function parseHTML (html, parseHooks = {}) {
       let attr
       let hasAttr = false
       while (attr = html.match(attributeRegex)) {
-        const [all, name, val] = attr
+        const [all, name, val = ''] = attr
         advance(all.length)
         attrs[name] = val
         hasAttr = true
