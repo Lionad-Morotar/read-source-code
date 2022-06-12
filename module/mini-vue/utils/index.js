@@ -20,6 +20,10 @@ export function toString (obj) {
     : String(obj)
 }
 
+export function removeLastComma (str) {
+  return str.replace(/,$/, '')
+}
+
 export function define(obj, key, value, enumerable) {
   Object.defineProperty(obj, key, {
     value,

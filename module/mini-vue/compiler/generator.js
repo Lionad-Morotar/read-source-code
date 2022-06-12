@@ -1,30 +1,59 @@
-import { error } from '../utils'
+import { error, removeLastComma } from '../utils'
 
 let curVM = null
 
 export default function generate (ast) {
   curVM = this
   const root = ast.root
-  const code = root.map(genElement)
+  const code = root.map(genElement).map(x => x.code)
   curVM = null
-  return `with (this) { return [${code}] }`
+
+  // * for debug
+  // console.log(JSON.stringify(code.join(''), null, 2))
+
+  return `with (this) { return [${code.join('')}] }`
 }
 
 function genElement (astNode) {
   if (astNode.text) {
     return genText(astNode)
   }
+  const prefix = handlePrefix(astNode) || ''
+  const postfix = handlePostfix(astNode) || ''
   const data = genData(astNode)
   const children = genChildren(astNode)
-  return `_c('${astNode.tag}'${data ? `,${data}` : ''}${children ? `${data ? ',' : ',undefined,'}${children}` : ''})`
+  return {
+    code: `${prefix}_c('${astNode.tag}'${data ? `,${data}` : ''}${children ? `${data ? ',' : ',undefined,'}${children}` : ''})${postfix}`,
+    velse: !!postfix
+  }
 }
 
 function genText (astNode) {
   const content = astNode.expression || JSON.stringify(astNode.text)
   if (astNode.isComment) {
-    return `_comment(${content})`
+    return { code: `_comment(${content})` }
   } else {
-    return `_text(${content})`
+    return { code: `_text(${content})` }
+  }
+}
+
+// handle prefix of "v-if v-else"
+function handlePrefix (astNode) {
+  const { attrs = {} } = astNode
+  if (attrs.hasOwnProperty(':if')) {
+    const ifRes = attrs[':if']
+    delete attrs[':if']
+    return `(${ifRes})?(`
+  }
+  if (attrs.hasOwnProperty(':else')) {
+    return `):(`
+  } 
+}
+function handlePostfix (astNode) {
+  const { attrs = {} } = astNode
+  if (attrs.hasOwnProperty(':else')) {
+    delete attrs[':else']
+    return `)`
   }
 }
 
@@ -49,8 +78,8 @@ function genProps (props) {
       staticContent += `"${k}":${JSON.stringify(v)},`
     }
   })
-  staticContent = staticContent.replace(/,$/, '')
-  dynamicContent = dynamicContent.replace(/,$/, '')
+  staticContent = removeLastComma(staticContent)
+  dynamicContent = removeLastComma(dynamicContent)
   if (dynamicContent) {
     return `_d({${staticContent}}, [${dynamicContent}])`
   } else {
@@ -64,7 +93,7 @@ function genHandlers (props) {
     const handler = genHandler(v)
     dynamicContent += `"${k}",${handler},`
   })
-  dynamicContent = dynamicContent.replace(/,$/, '')
+  dynamicContent = removeLastComma(dynamicContent)
   return `_d({}, [${dynamicContent}])`
 }
 
@@ -83,7 +112,14 @@ function genHandler (evtTemplate) {
 function genChildren (astNode) {
   let children = ''
   if (astNode.children && astNode.children.length) {
-    children += astNode.children.map(genElement).join(',')
+    children += astNode.children
+      .map(genElement)
+      .reduce((h, c) => {
+        const { code, velse } = c
+        return velse
+          ? `${h}${code}`
+          : `${h}${h?',':''}${code}`
+      }, '')
   }
   return children ? `[${children}]` : ''
 }

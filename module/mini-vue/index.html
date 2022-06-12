@@ -139,7 +139,7 @@
       })
 
       test(function () {
-        const vue = createSection('# filter', new Vue({
+        const vue = createSection('# filters', new Vue({
           template: `
             <div :id="count | prefix('id_')">count: {{ count | double | multiple(3) }}</div>
           `,
@@ -161,6 +161,20 @@
           }
         }), arguments.callee)
         setInterval(() => vue.count += 1, 3000)
+      })
+
+      only(function () {
+        const vue = createSection('# v-if, v-else', new Vue({
+          template: `
+            <div>
+              <span>Current Status:</span>
+              <span :if="open"> open </span>
+              <span :else> closed </span>
+            </div>
+          `,
+          data () { return { open: false } }
+        }), arguments.callee)
+        setInterval(() => vue.open = !vue.open, 1000)
       })
 
       test(function () {
