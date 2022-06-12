@@ -1,5 +1,5 @@
 import Dep from './dep'
-import extendProto from './array'
+import extendProto, { extendedProto } from './array'
 import { define, noop } from '../utils'
 
 export class Observer {
@@ -33,14 +33,14 @@ export function observe (value) {
 
 export function defineReactive(obj, k, v) {
   const dep = new Dep()
-  let childValue = observe(v)
+  let childObserver = observe(v)
   Object.defineProperty(obj, k, {
     enumerable: true,
     configurable: true,
     get () {
       dep.depend()
-      if (childValue) {
-        childValue.dep.depend()
+      if (childObserver) {
+        childObserver.dep.depend()
         Array.isArray(v) && dependArray(v)
       }
       return v
@@ -48,8 +48,7 @@ export function defineReactive(obj, k, v) {
     set (nv) {
       if (v === nv) return
       v = nv
-      observe(nv)
-      childValue = observe(nv)
+      childObserver = observe(nv)
       dep.notify()
     }
   })

@@ -177,7 +177,7 @@
         setInterval(() => vue.open = !vue.open, 1000)
       })
 
-      only(function () {
+      test(function () {
         const vue = createSection('# v-for', new Vue({
           template: `
             <div>
@@ -374,6 +374,58 @@
             unWatch()
           }
         })
+      })
+
+      only(function () {
+        const vue = createSection('# simple TODO app', new Vue({
+          template: `
+            <div id="todo-list-example">
+              <form>
+                <label for="new-todo">Add a todo {{ ' : ' }}</label>
+                <button @click.prevent="addRandomTODO">Add</button>
+              </form>
+              <ul @click="() => console.log('ul clicked!')">
+                <li :for="(todo, idx) in todos">
+                  <span :if="idx % 2" @click.stop="noop">
+                    {{ todo.id }}{{ ' : ' }}{{ todo.content }}
+                  </span>
+                  <span :else @click="noop">
+                    {{ todo.id }}{{ ' : ' }}{{ todo.content }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          `,
+          data () {
+            return {
+              todoID: 4,
+              newTodoText: '',
+              todos: [
+                {
+                  id: 1,
+                  content: 'Do the dishes',
+                },
+                {
+                  id: 2,
+                  content: 'Take out the trash',
+                },
+                {
+                  id: 3,
+                  content: 'Mow the lawn'
+                }
+              ]
+            }
+          },
+          methods: {
+            noop () {},
+            addRandomTODO () {
+              this.todos.push({
+                id: this.todoID++,
+                content: 'TODO: TODO'
+              })
+            }
+          }
+        }), arguments.callee)
       })
     }
   </script>

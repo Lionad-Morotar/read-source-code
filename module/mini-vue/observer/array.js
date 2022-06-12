@@ -16,7 +16,6 @@ const methodsToPatch = [
 methodsToPatch.map(method => {
   const raw = proto[method]
   define(extendedProto, method, function (...args) {
-    console.log('args:', args)
     const result = raw.apply(this, args)
     const ob = this.__ob__
     let inserted

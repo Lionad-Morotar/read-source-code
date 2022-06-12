@@ -28,7 +28,7 @@ function genElement (astNode) {
   const postfix = handlePostfix(astNode) || ''
   const data = genData(astNode)
   const children = genChildren(astNode)
-
+ 
   return {
     code: `${prefix}_c('${astNode.tag}'${data ? `,${data}` : ''}${children ? `${data ? ',' : ',undefined,'}${children}` : ''})${postfix}`,
     velse: !!postfix
@@ -110,23 +110,39 @@ function genProps (props) {
 function genHandlers (props) {
   let dynamicContent = ''
   Object.entries(props).map(([k,v]) => {
-    const handler = genHandler(v)
-    dynamicContent += `"${k}",${handler},`
+    const { name, handler } = genHandler(v, k)
+    dynamicContent += `"${name}",${handler},`
   })
   dynamicContent = removeLastComma(dynamicContent)
   return `_d({}, [${dynamicContent}])`
 }
 
-function genHandler (evtTemplate) {
+function genHandler (evtTemplate, name) {
+  const [realName, ...modifiers] = name.split('.')
+  const modifiersContent = modifiers
+    .map(x => {
+      if (x === 'stop') {
+        return `e.stopPropagation()`
+      } else if (x === 'prevent') {
+        return `e.preventDefault()`
+      }
+    })
+    .join(';')
+
   const fnRegex = /^\([^)]*?\)\s*=>|function\s+\([^)]*?\)\s*\{[^}]*?\}/
   const isFnExp = fnRegex.test(evtTemplate)
   if (isFnExp) {
-    return evtTemplate
+    return {
+      name: realName,
+      handler: evtTemplate
+    }
   } else if (curVM.hasOwnProperty(evtTemplate)) {
-    return `() => ${evtTemplate}()`
-  } else {
-    error('wrong event')
+    return {
+      name: realName,
+      handler: `(e, ...args) => { ${modifiersContent}; ${evtTemplate}(e, ...args) }`
+    }
   }
+  error('wrong event')
 }
 
 function genChildren (astNode) {
