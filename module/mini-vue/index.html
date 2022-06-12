@@ -163,11 +163,11 @@
         setInterval(() => vue.count += 1, 3000)
       })
 
-      only(function () {
+      test(function () {
         const vue = createSection('# v-if, v-else', new Vue({
           template: `
             <div>
-              <span>Current Status:</span>
+              Current Status:
               <span :if="open"> open </span>
               <span :else> closed </span>
             </div>
@@ -175,6 +175,25 @@
           data () { return { open: false } }
         }), arguments.callee)
         setInterval(() => vue.open = !vue.open, 1000)
+      })
+
+      only(function () {
+        const vue = createSection('# v-for', new Vue({
+          template: `
+            <div>
+              Lists:
+              <span :for="(item, idx) in lists">
+                {{ item }}
+                {{ idx === lists.length-1 ? '' : ',' }}
+              </span>
+            </div>
+          `,
+          data () {
+            return {
+              lists: [1, 2, 3, 4, 5]
+            }
+          }
+        }), arguments.callee)
       })
 
       test(function () {

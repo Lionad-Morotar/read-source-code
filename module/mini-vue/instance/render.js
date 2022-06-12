@@ -16,15 +16,16 @@ export default function renderMixin (Vue) {
 }
 
 function installRenderHelpers (target) {
-  target._f = getInstanceFilter
   target._c = createNode
   target._s = toString
   target._text = createTextNode
   target._comment = createCommentNode
-  target._d = dynamicProp
+  target._f = renderInstanceFilter
+  target._d = renderDynamicProp
+  target._l = renderList
 }
 
-function getInstanceFilter (name) {
+function renderInstanceFilter (name) {
   const filters = this.$options.filters || {}
   const filter = filters[name]
   return filter.bind(this) || error(`no filter named ${name} find`)
@@ -47,9 +48,13 @@ function createCommentNode (text) {
   return node
 }
 
-function dynamicProp(obj, values) {
+function renderDynamicProp (obj, values) {
   for (let i = 0, l = values.length; i < l; i += 2) {
     obj[values[i]] = values[i + 1]
   }
   return obj
+}
+
+function renderList(list, fn) {
+  return list.map(fn)
 }

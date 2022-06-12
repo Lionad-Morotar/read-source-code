@@ -9,7 +9,7 @@ export default function generate (ast) {
   curVM = null
 
   // * for debug
-  // console.log(JSON.stringify(code.join(''), null, 2))
+  // console.log('Generate: ', code.join(''))
 
   return `with (this) { return [${code.join('')}] }`
 }
@@ -18,10 +18,17 @@ function genElement (astNode) {
   if (astNode.text) {
     return genText(astNode)
   }
+
+  const hasFor = astNode?.attrs?.hasOwnProperty(':for')
+  if (hasFor) {
+    return genFor(astNode)
+  }
+
   const prefix = handlePrefix(astNode) || ''
   const postfix = handlePostfix(astNode) || ''
   const data = genData(astNode)
   const children = genChildren(astNode)
+
   return {
     code: `${prefix}_c('${astNode.tag}'${data ? `,${data}` : ''}${children ? `${data ? ',' : ',undefined,'}${children}` : ''})${postfix}`,
     velse: !!postfix
@@ -55,6 +62,19 @@ function handlePostfix (astNode) {
     delete attrs[':else']
     return `)`
   }
+}
+
+// handle v-for
+function genFor (astNode) {
+  const matchRes = astNode.attrs[':for'].match(/\(([^)]*)\)\s*in\s*(.*)/)
+  if (matchRes) {
+    const [_, args, list] = matchRes
+    delete astNode.attrs[':for']
+    return {
+      code: `..._l(${list}, function (${args}) { return ${genElement(astNode).code} })`
+    }
+  }
+  error('args of :for match failed')
 }
 
 /**
