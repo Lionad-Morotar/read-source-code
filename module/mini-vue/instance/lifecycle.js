@@ -21,7 +21,9 @@ export default function lifecycleMixin (Vue) {
     oldElements && oldElements.map(x => delete x.__vue__)
   }
 
-  // Vue.prototype.$forceUpdate
+  Vue.prototype.$forceUpdate = function () {
+    this._watchers && this._watchers.map(x => x.update())
+  }
 
   Vue.prototype.$destroy = function () {
     callHook(this, 'beforeDestroy')

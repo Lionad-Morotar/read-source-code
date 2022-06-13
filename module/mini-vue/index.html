@@ -403,6 +403,37 @@
         })
       })
 
+      only(function () {
+        const vue = createHTMLSection('$forceUpdate', new Vue({
+          template: `
+            <span>My Toy: {{ JSON.stringify(toys) }}</span>
+            <ul>
+                <li><button @click="wrongFix">try to fix toy 3</button></li>
+                <li><button @click="fixToy3">fix toy 3</button></li>
+                <li><button @click="reset">reset</button></li>
+            </ul>
+          `,
+          data () {
+            return {
+              toys: [ 'toy1', 'toy2', 'toy4', 'toy4' ]
+            }
+          },
+          methods: {
+            wrongFix () {
+              this.toys[2] = 'toy3'
+              console.log(this.toys)
+            },
+            fixToy3 () {
+              this.toys[2] = 'toy3'
+              this.$forceUpdate()
+            },
+            reset () {
+              this.toys = [ 'toy1', 'toy2', 'toy4', 'toy4' ]
+            }
+          }
+        }), arguments.callee)
+      })
+
       test(() => createHTMLSection('真实世界案例', undefined, undefined, 'h2'))
 
       test(function () {
