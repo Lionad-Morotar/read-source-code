@@ -1,4 +1,6 @@
-import { pushTarget, popTarget } from './dep'
+import { pushTarget, popTarget } from './dep.js'
+import { queueWatcher } from './scheduler.js'
+import { TODO } from '../utils/index.js'
 
 let uid = 0
 
@@ -9,6 +11,7 @@ export default class Watcher {
     this.options = options || {}
     this.expOrFn = expOrFn
     this.cb = callback
+    this.sync = TODO
     this.deps = new Set()
     this.value = this.get()
   }
@@ -22,6 +25,13 @@ export default class Watcher {
     return value
   }
   update () {
+    if (this.sync) {
+      this.run()
+    } else {
+      queueWatcher(this)
+    }
+  }
+  run () {
     const oldValue = this.value
     this.value = this.get()
     if (oldValue !== this.value) {

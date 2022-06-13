@@ -4,6 +4,8 @@ export function noop () {
   /* do nothing */
 }
 
+export const TODO = null
+
 export function info (msg) {
   console.info(`[VUE] ${msg}`)
 }

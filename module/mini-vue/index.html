@@ -13,13 +13,13 @@
       .section > h3 {
         margin-left: 14px;
       }
-      .section > .vmount {
+      .section > h3 + .vmount {
         margin: 14px;
         padding: 14px;
         border: solid 1px #bbc;
         transition: border-color .3s;
       }
-      .section > .vmount:hover {
+      .section > h3 + .vmount:hover {
         border-color: black;
       }
       .section > pre {
@@ -404,7 +404,7 @@
         })
       })
 
-      only(function () {
+      test(function () {
         createHTMLSection('$mount', undefined, arguments.callee)
         const $con = [...document.querySelectorAll('.section .vmount')].slice(-1)[0]
         const vue = new Vue({
@@ -439,6 +439,41 @@
             },
             reset () {
               this.toys = [ 'toy1', 'toy2', 'toy4', 'toy4' ]
+            }
+          }
+        }), arguments.callee)
+      })
+
+      only(function () {
+        const vue = createHTMLSection('$nextTick', new Vue({
+          template: `
+            <span id="only-one">Value: {{ value }}</span>
+            <ul>
+              <li><button @click="alertValueBeforeUpdateDOM">change value to 2, and get value before update DOM</button></li>
+              <li><button @click="alertValueAfterUpdateDOM">change value to 3, and get value in $nextTick</button></li>
+              <li><button @click="reset">reset</button></li>
+            </ul>
+          `,
+          data () {
+            return {
+              value: 1
+            }
+          },
+          methods: {
+            alertValueBeforeUpdateDOM () {
+              this.value = 2
+              const $con = document.querySelector('#only-one')
+              alert($con.innerText)
+            },
+            alertValueAfterUpdateDOM () {
+              this.value = 3
+              this.$nextTick(() => {
+                const $con = document.querySelector('#only-one')
+                alert($con.innerText)
+              })
+            },
+            reset () {
+              this.value = 1
             }
           }
         }), arguments.callee)

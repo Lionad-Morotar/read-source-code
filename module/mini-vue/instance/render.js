@@ -1,5 +1,6 @@
-import VNode from '../vdom/vnode'
-import { error, toString } from '../utils'
+import VNode from '../vdom/vnode.js'
+import nextTick from '../observer/next-tick.js'
+import { error, toString } from '../utils/index.js'
 
 export function initRender (vm) {
   vm._vnode = null
@@ -8,7 +9,7 @@ export function initRender (vm) {
 export default function renderMixin (Vue) {
   installRenderHelpers(Vue.prototype)
 
-  // Vue.prototype.$nextTick
+  Vue.prototype.$nextTick = nextTick
 
   Vue.prototype._render = function () {
     return this.$vnodes = this.$options.render.call(this)
