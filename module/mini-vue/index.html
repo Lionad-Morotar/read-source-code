@@ -3,6 +3,30 @@
     <title>Mini Vue Demo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="./web/prism.js"></script>
+    <link rel="stylesheet" href="./web/prism.css" />
+    <style>
+      .section > h2 + div {
+        margin: 1em;
+        padding: 1em;
+        border: solid 1px #bbc;
+        transition: border-color .3s;
+      }
+      .section > h2 + div:hover {
+        border-color: black;
+      }
+      .section > pre {
+        margin: 1em;
+        padding: 1em;
+        border: solid 1px #bbc;
+        background: white;
+        font-size: 13px;
+        transition: border-color .3s;
+      }
+      .section > pre:hover {
+        border-color: black;
+      }
+    </style>
   </head>
   <body style="margin: 0;">
     <p
@@ -72,13 +96,13 @@
     let sectionCount = 1
     let tick = null
     let task = []
-    function createSection (msg, vue, pre, titleTag = 'h2') {
+    function createHTMLSection (msg, vue, pre, titleTag = 'h2') {
       const $app = document.querySelector('#app')
       const $content = document.createElement('div')
       const $vmount = document.createElement('div')
       const $title = document.createElement(titleTag)
 
-      $content.setAttribute('class', `section-content-${sectionCount++}`)
+      $content.setAttribute('class', `section section-content-${sectionCount++}`)
       $title.innerText = msg
 
       $app.appendChild($content)
@@ -87,7 +111,12 @@
       vue  && vue.$mount($vmount)
       if (pre) {
         const $pre = document.createElement('pre')
-        $pre.innerText = pre ? dedent(String(pre)) : ''
+        const $code = document.createElement('code')
+        $pre.appendChild($code)
+        const code = pre ? dedent(String(pre)) : ''
+        const codeHTML = window.Prism.highlight(code, Prism.languages.javascript, 'javascript')
+        $code.innerHTML = codeHTML
+        $code.setAttribute('class', 'language-js')
         $content.appendChild($pre)
       }
 
@@ -114,10 +143,10 @@
 
     window.onload = () => {
 
-      createSection('E2E Test Cases', undefined, undefined, 'h1')
+      createHTMLSection('E2E Test Cases', undefined, undefined, 'h1')
 
       test(function () {
-        createSection('# multy root template', new Vue({
+        createHTMLSection('# multy root template', new Vue({
           template: `
             <!-- hello comment -->
             <div><h5>Root NO. 1</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
@@ -128,7 +157,7 @@
       })
 
       test(function () {
-        const vue = createSection('# reactive binding', new Vue({
+        const vue = createHTMLSection('# reactive binding', new Vue({
           template: `
             <div>count: {{ count }}</div>
             <div>this.count: {{ this.count }}</div>
@@ -139,7 +168,7 @@
       })
 
       test(function () {
-        const vue = createSection('# filters', new Vue({
+        const vue = createHTMLSection('# filters', new Vue({
           template: `
             <div :id="count | prefix('id_')">count: {{ count | double | multiple(3) }}</div>
           `,
@@ -164,7 +193,7 @@
       })
 
       test(function () {
-        const vue = createSection('# v-if, v-else', new Vue({
+        const vue = createHTMLSection('# v-if, v-else', new Vue({
           template: `
             <div>
               Current Status:
@@ -178,7 +207,7 @@
       })
 
       test(function () {
-        const vue = createSection('# v-for', new Vue({
+        const vue = createHTMLSection('# v-for', new Vue({
           template: `
             <div>
               Lists:
@@ -197,7 +226,7 @@
       })
 
       test(function () {
-        const vue = createSection('# DOM prop binding', new Vue({
+        const vue = createHTMLSection('# DOM prop binding', new Vue({
           template: `
             <p>Switch Result: {{ switchValue }}</p>
             <button :disabled="!switchValue">{{ switchValue ? 'button' : 'disabled' }}</button>
@@ -209,7 +238,7 @@
       })
 
       test(function () {
-        const vue = createSection('# DOM event', new Vue({
+        const vue = createHTMLSection('# DOM event', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
             <p>Click "+" to add 1, "-" to dec 1.</p>
@@ -221,7 +250,7 @@
       })
 
       test(function () {
-        const vue = createSection('# $set', new Vue({
+        const vue = createHTMLSection('# $set', new Vue({
           template: `
             <div>
               <span>My Toy: {{ toys }}</span>
@@ -272,7 +301,7 @@
       })
 
       test(function () {
-        const vue = createSection('# $del', new Vue({
+        const vue = createHTMLSection('# $del', new Vue({
           template: `
             <div>
               <span>My Toy: {{ toys }}</span>
@@ -310,7 +339,7 @@
       })
 
       test(function () {
-        const vue = createSection('# method binding', new Vue({
+        const vue = createHTMLSection('# method binding', new Vue({
           template: `
             <button :disabled="disabled">button</button>
             <button @click="disableFirstButton">disabled the first button for one second</button>
@@ -332,7 +361,7 @@
       })
 
       test(function () {
-        const vue = createSection('# watch', new Vue({
+        const vue = createHTMLSection('# watch', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
             <p>Button Pressed: {{ buttonClickCount }} times</p>
@@ -354,7 +383,7 @@
       })
 
       test(function () {
-        const vue = createSection('# $watch & unwatch', new Vue({
+        const vue = createHTMLSection('# $watch & unwatch', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
             <button @click="() => count++">+</button>
@@ -377,7 +406,7 @@
       })
 
       only(function () {
-        const vue = createSection('# simple TODO app', new Vue({
+        const vue = createHTMLSection('# simple TODO app', new Vue({
           template: `
             <div id="todo-list-example">
               <form>

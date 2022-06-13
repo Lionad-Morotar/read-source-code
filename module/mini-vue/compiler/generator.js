@@ -28,7 +28,7 @@ function genElement (astNode) {
   const postfix = handlePostfix(astNode) || ''
   const data = genData(astNode)
   const children = genChildren(astNode)
- 
+
   return {
     code: `${prefix}_c('${astNode.tag}'${data ? `,${data}` : ''}${children ? `${data ? ',' : ',undefined,'}${children}` : ''})${postfix}`,
     velse: !!postfix
