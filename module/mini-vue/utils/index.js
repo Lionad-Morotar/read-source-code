@@ -1,3 +1,5 @@
+import config from '../config.js'
+
 export * from './attr.js'
 
 export function noop () {
@@ -6,12 +8,20 @@ export function noop () {
 
 export const TODO = null
 
-export function info (msg) {
-  console.info(`[VUE] ${msg}`)
+export function warn (msg) {
+  if (config.warnHandler) {
+    config.warnHandler(msg)
+  } else if (!config.silent) {
+    console.info(`[VUE WARN] ${msg}`)
+  }
 }
 
 export function error (msg) {
-  throw new Error(`[VUE] ${msg}`)
+  if (config.errorHandler) {
+    config.errorHandler(msg)
+  } else if (!config.silent) {
+    throw new Error(`[VUE] ${msg}`)
+  }
 }
 
 export function toString (obj) {

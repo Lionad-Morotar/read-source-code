@@ -46,7 +46,6 @@ export function mountComponent (el) {
   
   this.$els = el
   const updateComponent = () => {
-    this.$info('beforeUpdate')
     this._update(this._render())
   }
   callHook(this, 'beforeMount')

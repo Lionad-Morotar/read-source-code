@@ -290,7 +290,7 @@
         }), arguments.callee)
       })
 
-      test(() => createHTMLSection('全局 API', undefined, undefined, 'h2'))
+      test(() => createHTMLSection('实例方法 / 数据', undefined, undefined, 'h2'))
 
       test(function () {
         const vue = createHTMLSection('$set', new Vue({
@@ -382,7 +382,7 @@
       })
 
       test(function () {
-        const vue = createHTMLSection('$unwatch', new Vue({
+        const vue = createHTMLSection('$watch', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
             <button @click="() => count++">+</button>
@@ -403,6 +403,8 @@
           }
         })
       })
+
+      test(() => createHTMLSection('实例方法 / 声明周期', undefined, undefined, 'h2'))
 
       test(function () {
         createHTMLSection('$mount', undefined, arguments.callee)
@@ -444,7 +446,7 @@
         }), arguments.callee)
       })
 
-      only(function () {
+      test(function () {
         const vue = createHTMLSection('$nextTick', new Vue({
           template: `
             <span id="only-one">Value: {{ value }}</span>

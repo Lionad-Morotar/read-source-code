@@ -3,7 +3,7 @@ import { initEvent } from './event'
 import { initRender } from './render'
 import { initLifecycle, callHook } from './lifecycle'
 
-import { info } from '../utils'
+import { warn } from '../utils'
 
 let uid = 0
 
@@ -24,8 +24,8 @@ export default function initMixin (Vue) {
     callHook(this, 'created')
   }
 
-  Vue.prototype.$info = function (...args) {
-    this.$options.info && info(...args)
+  Vue.prototype.$warn = function (...args) {
+    this.$options.warn && warn(...args)
   }
 
 }
