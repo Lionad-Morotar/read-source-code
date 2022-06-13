@@ -27,7 +27,7 @@ specifiers:
   rollup: ^2.19.0
   rollup-plugin-browsersync: ^1.1.0
   rollup-plugin-commonjs: ^10.1.0
-  rollup-plugin-copy: ^3.3.0
+  rollup-plugin-copy: ^3.4.0
   rollup-plugin-generate-html-template: ^1.7.0
   rollup-plugin-node-resolve: ^5.2.0
   should: ^13.2.3
@@ -5998,7 +5998,7 @@ packages:
     dev: true
 
   /uglify-to-browserify/1.0.2:
-    resolution: {integrity: sha1-bgkk1r2mta/jSeOabWMoUKD4grc=}
+    resolution: {integrity: sha512-vb2s1lYx2xBtUgy+ta+b2J/GLVUR+wmpINwHePmPRhOsIVCG2wDzKJ0n14GslH1BifsqVzSOwQhRaCAsZ/nI4Q==}
     requiresBuild: true
     dev: true
     optional: true

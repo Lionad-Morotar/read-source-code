@@ -7,8 +7,17 @@ const shouldRun = !!process.env.RUN
 const openDevServer = !!process.env.serve
 const inputPath = process.env.INPUT
 const inputFileDir = path.dirname(inputPath)
+const copyPath = process.env.COPY
+const copyPathDir = path.posix.join(inputPath, '..', copyPath)
 const outputDir = './build/'
-const outputDest = `${outputDir}${inputFileDir}`
+const outputDest = path.posix.join(outputDir, inputFileDir)
+
+if (copyPathDir) {
+  console.info('[info] copy target:', copyPathDir)
+  console.info('[info] copy to:', outputDest)
+  // * for debug next line
+  // error
+}
 
 export default {
   input: inputPath,
@@ -20,10 +29,11 @@ export default {
       require('rollup-plugin-generate-html-template')({
         template: path.join(inputFileDir, '/index.html'),
       }),
-    // 忘了为啥要 copy 了，暂时禁用
-    // require('rollup-plugin-copy')({
-    //   targets: [{ src: inputFileDir + '/**/*', dest: outputDest }],
-    // }),
+    require('rollup-plugin-copy')({
+      targets: [
+        { src: copyPathDir, dest: outputDest },
+      ],
+    }),
     runGulp && {
       name: 'run-gulp',
       buildEnd: async () => {

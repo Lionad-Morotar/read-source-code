@@ -7,7 +7,7 @@
     "algorithm:dfs": "cross-env RUN=1 INPUT=./algorithm/dfs.js rollup -cw",
     "datastructure:lru": "cross-env RUN=1 INPUT=./data-structure/lru.js rollup -cw",
     "datastructure:link-list": "cross-env RUN=1 INPUT=./data-structure/link-list.js rollup -cw",
-    "module:mini-vue": "cross-env HTML=1 RUN=1 SERVE=1 INPUT=./module/mini-vue/index.js rollup -cw",
+    "module:mini-vue": "cross-env HTML=1 RUN=1 SERVE=1 INPUT=./module/mini-vue/index.js COPY=./web rollup -cw",
     "test:mini-vue": "mocha ./module/mini-vue/test/index.js",
     "watch:test:mini-vue": "npm-watch test:mini-vue",
     "module:webpack": "nodemon ./module/webpack/index.js",
@@ -89,7 +89,7 @@
     "rollup": "^2.19.0",
     "rollup-plugin-browsersync": "^1.1.0",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-generate-html-template": "^1.7.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "should": "^13.2.3"
