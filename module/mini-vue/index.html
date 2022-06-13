@@ -6,9 +6,16 @@
     <script src="./web/prism.js"></script>
     <link rel="stylesheet" href="./web/prism.css" />
     <style>
+      .section > h2 {
+        padding: 14px;
+        background: bisque;
+      }
+      .section > h3 {
+        margin-left: 14px;
+      }
       .section > h3 + div {
-        margin: 1em;
-        padding: 1em;
+        margin: 14px;
+        padding: 14px;
         border: solid 1px #bbc;
         transition: border-color .3s;
       }
@@ -16,8 +23,8 @@
         border-color: black;
       }
       .section > pre {
-        margin: 1em;
-        padding: 1em;
+        margin: 14px;
+        padding: 14px;
         border: solid 1px #bbc;
         background: white;
         font-size: 13px;
@@ -143,14 +150,15 @@
 
     window.onload = () => {
 
-      createHTMLSection('MiniVue E2E Testcases', undefined, undefined, 'h1')
+      test(() => createHTMLSection('MiniVue E2E Testcases', undefined, undefined, 'h1'))
 
-      createHTMLSection('模板语法', undefined, undefined, 'h1')
+      test(() => createHTMLSection('模板语法', undefined, undefined, 'h2'))
 
       test(function () {
         createHTMLSection('多根节点模板', new Vue({
           template: `
             <!-- hello comment -->
+            <p>three roots template:</p>
             <div><h5>Root NO. 1</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
             <div><h5>Root NO. 2</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
             <div><h5>Root NO. 3</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
@@ -159,7 +167,7 @@
       })
 
       test(function () {
-        const vue = createHTMLSection('# reactive binding', new Vue({
+        const vue = createHTMLSection('文本插值', new Vue({
           template: `
             <div>count: {{ count }}</div>
             <div>this.count: {{ this.count }}</div>
@@ -170,7 +178,7 @@
       })
 
       test(function () {
-        const vue = createHTMLSection('# filters', new Vue({
+        const vue = createHTMLSection('过滤器', new Vue({
           template: `
             <div :id="count | prefix('id_')">count: {{ count | double | multiple(3) }}</div>
           `,
@@ -195,7 +203,21 @@
       })
 
       test(function () {
-        const vue = createHTMLSection('# v-if, v-else', new Vue({
+        const vue = createHTMLSection('属性绑定', new Vue({
+          template: `
+            <p>Switch Result: {{ switchValue }}</p>
+            <button :disabled="!switchValue">{{ switchValue ? 'not disabled' : 'disabled' }}</button>
+            <button :disabled="switchValue">{{ !switchValue ? 'not disabled' : 'disabled' }}</button>
+          `,
+          data () { return { switchValue: true } }
+        }), arguments.callee)
+        setInterval(() => vue.switchValue  = !vue.switchValue, 2000)
+      })
+
+      test(() => createHTMLSection('条件渲染', undefined, undefined, 'h2'))
+
+      test(function () {
+        const vue = createHTMLSection('if & else', new Vue({
           template: `
             <div>
               Current Status:
@@ -208,8 +230,10 @@
         setInterval(() => vue.open = !vue.open, 1000)
       })
 
+      test(() => createHTMLSection('列表渲染', undefined, undefined, 'h2'))
+
       test(function () {
-        const vue = createHTMLSection('# v-for', new Vue({
+        const vue = createHTMLSection('for', new Vue({
           template: `
             <div>
               Lists:
@@ -227,20 +251,10 @@
         }), arguments.callee)
       })
 
-      test(function () {
-        const vue = createHTMLSection('# DOM prop binding', new Vue({
-          template: `
-            <p>Switch Result: {{ switchValue }}</p>
-            <button :disabled="!switchValue">{{ switchValue ? 'button' : 'disabled' }}</button>
-            <button :disabled="switchValue">{{ !switchValue ? 'button' : 'disabled' }}</button>
-          `,
-          data () { return { switchValue: true } }
-        }), arguments.callee)
-        setInterval(() => vue.switchValue  = !vue.switchValue, 2000)
-      })
+      test(() => createHTMLSection('事件处理', undefined, undefined, 'h2'))
 
       test(function () {
-        const vue = createHTMLSection('# DOM event', new Vue({
+        const vue = createHTMLSection('事件监听', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
             <p>Click "+" to add 1, "-" to dec 1.</p>
@@ -251,17 +265,43 @@
         }), arguments.callee)
       })
 
+      test(() => createHTMLSection('生命周期', undefined, undefined, 'h2'))
+
       test(function () {
-        const vue = createHTMLSection('# $set', new Vue({
+        const vue = createHTMLSection('vm.watch', new Vue({
+          template: `
+            <p>Count Result: {{ count }}</p>
+            <p>Button Pressed: {{ buttonClickCount }} times</p>
+            <button @click="() => count++">+</button>
+            <button @click="() => count--">-</button>
+          `,
+          data () {
+            return {
+              count: 1,
+              buttonClickCount: 0
+            }
+          },
+          watch: {
+            count (newValue, oldValue) {
+              this.buttonClickCount += 1
+            }
+          }
+        }), arguments.callee)
+      })
+
+      test(() => createHTMLSection('全局 API', undefined, undefined, 'h2'))
+
+      test(function () {
+        const vue = createHTMLSection('$set', new Vue({
           template: `
             <div>
-              <span>My Toy: {{ toys }}</span>
-              <div>
-                <button @click="fixToy3">simply fix toy 3</button>
-                <button @click="anotherMethodToFixToy3">another method to fix toy3</button>
-                <button @click="yetAnotherMethodToFixToy3">yet another method to fix toy3</button>
-                <button @click="reset">reset</button>
-              </div>
+              <span>My Toy: {{ JSON.stringify(toys) }}</span>
+              <ul>
+                <li><button @click="fixToy3">simply fix toy 3</button></li>
+                <li><button @click="anotherMethodToFixToy3">another method to fix toy3</button></li>
+                <li><button @click="yetAnotherMethodToFixToy3">yet another method to fix toy3</button></li>
+                <li><button @click="reset">reset</button></li>
+              </ul>
             </div>
           `,
           data () {
@@ -303,14 +343,14 @@
       })
 
       test(function () {
-        const vue = createHTMLSection('# $del', new Vue({
+        const vue = createHTMLSection('$del', new Vue({
           template: `
             <div>
-              <span>My Toy: {{ toys }}</span>
-              <div>
-                <button @click="deleteWrongToy">delete wrong toy</button>
-                <button @click="reset">reset</button>
-              </div>
+              <span>My Toy: {{ JSON.stringify(toys) }}</span>
+              <ul>
+                <li><button @click="deleteWrongToy">delete wrong toy</button></li>
+                <li><button @click="reset">reset</button></li>
+              </ul>
             </div>
           `,
           data () {
@@ -341,51 +381,7 @@
       })
 
       test(function () {
-        const vue = createHTMLSection('# method binding', new Vue({
-          template: `
-            <button :disabled="disabled">button</button>
-            <button @click="disableFirstButton">disabled the first button for one second</button>
-          `,
-          data () {
-            return {
-              disabled: false
-            }
-          },
-          methods: {
-            disableFirstButton () {
-              if (!this.disabled) {
-                this.disabled = true
-                setTimeout(() => this.disabled = false, 1000)
-              }
-            }
-          }
-        }), arguments.callee)
-      })
-
-      test(function () {
-        const vue = createHTMLSection('# watch', new Vue({
-          template: `
-            <p>Count Result: {{ count }}</p>
-            <p>Button Pressed: {{ buttonClickCount }} times</p>
-            <button @click="() => count++">+</button>
-            <button @click="() => count--">-</button>
-          `,
-          data () {
-            return {
-              count: 1,
-              buttonClickCount: 0
-            }
-          },
-          watch: {
-            count (newValue, oldValue) {
-              this.buttonClickCount += 1
-            }
-          }
-        }), arguments.callee)
-      })
-
-      test(function () {
-        const vue = createHTMLSection('# $watch & unwatch', new Vue({
+        const vue = createHTMLSection('$unwatch', new Vue({
           template: `
             <p>Count Result: {{ count }}</p>
             <button @click="() => count++">+</button>
@@ -407,8 +403,10 @@
         })
       })
 
+      test(() => createHTMLSection('真实世界案例', undefined, undefined, 'h2'))
+
       test(function () {
-        const vue = createHTMLSection('# simple TODO app', new Vue({
+        const vue = createHTMLSection('simple TODO app', new Vue({
           template: `
             <div id="todo-list-example">
               <form>
