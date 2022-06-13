@@ -6,13 +6,13 @@
     <script src="./web/prism.js"></script>
     <link rel="stylesheet" href="./web/prism.css" />
     <style>
-      .section > h2 + div {
+      .section > h3 + div {
         margin: 1em;
         padding: 1em;
         border: solid 1px #bbc;
         transition: border-color .3s;
       }
-      .section > h2 + div:hover {
+      .section > h3 + div:hover {
         border-color: black;
       }
       .section > pre {
@@ -96,7 +96,7 @@
     let sectionCount = 1
     let tick = null
     let task = []
-    function createHTMLSection (msg, vue, pre, titleTag = 'h2') {
+    function createHTMLSection (msg, vue, pre, titleTag = 'h3') {
       const $app = document.querySelector('#app')
       const $content = document.createElement('div')
       const $vmount = document.createElement('div')
@@ -143,10 +143,12 @@
 
     window.onload = () => {
 
-      createHTMLSection('E2E Test Cases', undefined, undefined, 'h1')
+      createHTMLSection('MiniVue E2E Testcases', undefined, undefined, 'h1')
+
+      createHTMLSection('模板语法', undefined, undefined, 'h1')
 
       test(function () {
-        createHTMLSection('# multy root template', new Vue({
+        createHTMLSection('多根节点模板', new Vue({
           template: `
             <!-- hello comment -->
             <div><h5>Root NO. 1</h5> <dd><dt>first line</dt><dt>second line</dt><dt>third line</dt></dd></div>
@@ -405,7 +407,7 @@
         })
       })
 
-      only(function () {
+      test(function () {
         const vue = createHTMLSection('# simple TODO app', new Vue({
           template: `
             <div id="todo-list-example">

@@ -9,9 +9,9 @@ export default function generate (ast) {
   curVM = null
 
   // * for debug
-  // console.log('Generate: ', code.join(''))
+  console.log('Generate: ', code.join(','))
 
-  return `with (this) { return [${code.join('')}] }`
+  return `with (this) { return [${code.join(',')}] }`
 }
 
 function genElement (astNode) {
