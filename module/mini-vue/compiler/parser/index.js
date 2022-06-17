@@ -22,7 +22,6 @@ export default function parse (template) {
         if (k.startsWith('@')) {
           events[k.slice(1)] = v
           delete attrs[k]
-          hasEvent = true
         }
         // handle filters in prop
         if (k.startsWith(':')) {
