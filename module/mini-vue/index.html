@@ -237,7 +237,7 @@
         setInterval(() => vue.open = !vue.open, 2000)
       })
 
-      only(function () {
+      test(function () {
         const vue = createHTMLSection('v-show-if & v-else', new Vue({
           template: `
             <div>
@@ -265,6 +265,23 @@
           data () {
             return {
               lists: [1, 2, 3, 4, 5]
+            }
+          }
+        }), arguments.callee)
+      })
+
+      only(function () {
+        const vue = createHTMLSection('v-model', new Vue({
+          template: `
+            <div>
+              // FIXME vnode diff when re-render
+              <p>Input here: <input :model="value" /></p>
+              <p>Binded Value: {{ value }}</p>
+            </div>
+          `,
+          data () {
+            return {
+              value: '',
             }
           }
         }), arguments.callee)

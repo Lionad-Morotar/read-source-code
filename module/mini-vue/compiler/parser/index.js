@@ -6,15 +6,17 @@ export default function parse (template) {
   return htmlParser(template, {
     text: templateParser,
     end (node) {
-      const { attrs = {} } = node.data
-      const events = {}
-      let hasEvent = false
+      // TODO CreateObject(x), getter => x.changed = true
+      const { tagName, attrs = {}, events = {} } = node.data
+
       Object.entries(attrs).map(([k, v]) => {
+        // handle events
         if (k.startsWith('@')) {
           events[k.slice(1)] = v
           delete attrs[k]
           hasEvent = true
         }
+        // handle filters in prop
         if (k.startsWith(':')) {
           if (hasFilterExpression(`_s(${v})`)) {
             const parsed = filterParser(`_s(${v})`)
@@ -22,9 +24,8 @@ export default function parse (template) {
           }
         }
       })
-      if (hasEvent) {
-        node.data.events = events
-      }
+
+      node.data.events = events
     }
   })
 }

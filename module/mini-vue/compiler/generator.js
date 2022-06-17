@@ -30,6 +30,7 @@ function genElement (astNode) {
 
   const prefix = handlePrefix(astNode) || ''
   const postfix = handlePostfix(astNode) || ''
+  processModel(astNode)
   processData(astNode)
   const data = genData(astNode)
   const children = genChildren(astNode)
@@ -90,6 +91,20 @@ function genFor (astNode) {
   error('args of :for match failed')
 }
 
+// handle v-model
+function processModel (astNode) {
+  const events = astNode.events || (astNode.events = {})
+  const attrs = astNode.attrs || (astNode.attrs = {})
+  if (attrs.hasOwnProperty(':model')) {
+    const modelEXP = attrs[':model']
+    // TODO & FIXME
+    const { prop = 'value', event = 'input' } = {}
+    attrs[`:${prop}`] = modelEXP
+    events[event] = `function (evt) { ${prop} = evt.target.value }`
+  }
+}
+
+// TODO ? move processData to parser/index.js
 let showIfCondition = null
 function processData (astNode) {
   const { attrs = {}, styles = {} } = astNode
