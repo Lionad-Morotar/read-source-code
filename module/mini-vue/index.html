@@ -565,12 +565,13 @@
       // ************************************************************************* //
       // ************************************************************************* //
 
-      test(function () {
+      only(function () {
         const vue = createHTMLSection('simple TODO app', new Vue({
           template: `
             <div id="todo-list-example">
               <form>
                 <label for="new-todo">Add a todo {{ ' : ' }}</label>
+                <input :model="newTodoText" />
                 <button @click.prevent="addRandomTODO">Add</button>
               </form>
               <ul @click="() => console.log('ul clicked!')">
@@ -610,8 +611,9 @@
             addRandomTODO () {
               this.todos.push({
                 id: this.todoID++,
-                content: 'TODO: TODO'
+                content: this.newTodoText
               })
+              this.newTodoText = ''
             }
           }
         }), arguments.callee)

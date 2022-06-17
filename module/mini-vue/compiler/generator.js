@@ -101,10 +101,12 @@ function processModel (astNode) {
   const attrs = astNode.attrs || (astNode.attrs = {})
   if (attrs.hasOwnProperty(':model')) {
     const modelEXP = attrs[':model']
-    // TODO & FIXME
-    const { prop = 'value', event = 'input' } = {}
+    const prop = 'value'
+    const event = 'input'
     attrs[`:${prop}`] = modelEXP
-    events[event] = `function (evt) { ${prop} = evt.target.value }`
+    events[event] = `function (evt) { ${modelEXP} = evt.target.value }`
+    // * for debug
+    // console.log('prop', events[event] )
   }
 }
 
