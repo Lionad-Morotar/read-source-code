@@ -24,7 +24,8 @@ function render (vnode) {
   const vm = this
   const $el = createElement(vnode)
   if (vnode.data) {
-    const { attrs = {}, events = {} } = vnode.data
+    const { attrs = {}, events = {}, style = {} } = vnode.data
+    // * for debug
     // console.log(vnode.tag, vnode.data)
     Object.entries(attrs).map(([k, v]) => { 
       if (isBooleanAttr(k)) {
@@ -35,6 +36,13 @@ function render (vnode) {
     })
     Object.entries(events).map(([k, v]) => {
       $el.addEventListener(k, v.bind(vm))
+    })
+    Object.entries(style).map(([k, v]) => {
+      if (v === 'unset') {
+        return
+      } else {
+        $el.style.setProperty(k, v)
+      }
     })
   }
   if (vnode.children && vnode.children.length) {

@@ -16,7 +16,7 @@ export default function runtimeMixin (Vue) {
     this.$options.render = function () {
       return new Function(this.$options.code).call(this._renderProxy)
     }
-    mountComponent.call(this, el)
+    return mountComponent.call(this, el)
   }
 
 }

@@ -11,6 +11,10 @@ export default function generate (ast) {
   // * for debug
   // console.log('Generate: ', code.join(','))
 
+  if (showIfCondition) {
+    error('wrong match between :show-if and :else')
+  }
+
   return `with (this) { return [${code.join(',')}] }`
 }
 
@@ -26,6 +30,7 @@ function genElement (astNode) {
 
   const prefix = handlePrefix(astNode) || ''
   const postfix = handlePostfix(astNode) || ''
+  processData(astNode)
   const data = genData(astNode)
   const children = genChildren(astNode)
 
@@ -44,23 +49,31 @@ function genText (astNode) {
   }
 }
 
-// handle prefix of "v-if v-else"
+// handle v-if
 function handlePrefix (astNode) {
   const { attrs = {} } = astNode
   if (attrs.hasOwnProperty(':if')) {
+    astNode._markHandleIf = true
     const ifRes = attrs[':if']
     delete attrs[':if']
     return `(${ifRes})?(`
   }
   if (attrs.hasOwnProperty(':else')) {
-    return `):(`
+    if (astNode._markHandleIf) {
+      return `):(`
+    }
   } 
 }
+
+// handle v-else
 function handlePostfix (astNode) {
   const { attrs = {} } = astNode
   if (attrs.hasOwnProperty(':else')) {
-    delete attrs[':else']
-    return `)`
+    if (astNode._markHandleIf) {
+      delete astNode._markHandleIf
+      delete attrs[':else']
+      return `)`
+    }
   }
 }
 
@@ -77,6 +90,24 @@ function genFor (astNode) {
   error('args of :for match failed')
 }
 
+let showIfCondition = null
+function processData (astNode) {
+  const { attrs = {}, styles = {} } = astNode
+
+  // handle v-show-if & v-else
+  if (attrs.hasOwnProperty(':show-if')) {
+    showIfCondition = attrs[':show-if']
+    styles[':display'] = `${showIfCondition} ? 'none' : 'unset'`
+    delete astNode.attrs[':show-if']
+  }
+  if (attrs.hasOwnProperty(':else')) {
+    styles[':display'] = `${showIfCondition} ? 'unset' : 'none'`
+    delete astNode.attrs[':else']
+    showIfCondition = null
+  }
+  astNode.styles = styles
+}
+
 /**
  * VNode 数据对象详细配置
  * @see https://cn.vuejs.org/v2/guide/render-function.html#%E6%B7%B1%E5%85%A5%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1
@@ -85,6 +116,7 @@ function genData (astNode) {
   let data = ''
   astNode.attrs && (data += `attrs:${genProps(astNode.attrs)},`)
   astNode.events && (data += `events:${genHandlers(astNode.events)},`)
+  astNode.styles && (data += `style:${genStyles(astNode.styles)},`)
   return data ? `{${data}}` : ''
 }
 
@@ -143,6 +175,10 @@ function genHandler (evtTemplate, name) {
     }
   }
   error('wrong event')
+}
+
+function genStyles (props) {
+  return genProps(props)
 }
 
 function genChildren (astNode) {

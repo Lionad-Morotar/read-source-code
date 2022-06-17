@@ -154,6 +154,9 @@
       test(() => createHTMLSection('MiniVue E2E Testcases', undefined, undefined, 'h1'))
 
       test(() => createHTMLSection('模板语法', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
         createHTMLSection('多根节点模板', new Vue({
@@ -215,10 +218,13 @@
         setInterval(() => vue.switchValue  = !vue.switchValue, 2000)
       })
 
-      test(() => createHTMLSection('条件渲染', undefined, undefined, 'h2'))
+      test(() => createHTMLSection('指令', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
-        const vue = createHTMLSection('if & else', new Vue({
+        const vue = createHTMLSection('v-if & v-else', new Vue({
           template: `
             <div>
               Current Status:
@@ -228,13 +234,25 @@
           `,
           data () { return { open: false } }
         }), arguments.callee)
-        setInterval(() => vue.open = !vue.open, 1000)
+        setInterval(() => vue.open = !vue.open, 2000)
       })
 
-      test(() => createHTMLSection('列表渲染', undefined, undefined, 'h2'))
+      only(function () {
+        const vue = createHTMLSection('v-show-if & v-else', new Vue({
+          template: `
+            <div>
+              Current Status:
+              <span :show-if="open"> open </span>
+              <span :else> closed </span>
+            </div>
+          `,
+          data () { return { open: false } }
+        }), arguments.callee)
+        setInterval(() => vue.open = !vue.open, 2000)
+      })
 
       test(function () {
-        const vue = createHTMLSection('for', new Vue({
+        const vue = createHTMLSection('v-for', new Vue({
           template: `
             <div>
               Lists:
@@ -253,6 +271,9 @@
       })
 
       test(() => createHTMLSection('事件处理', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
         const vue = createHTMLSection('事件监听', new Vue({
@@ -266,7 +287,10 @@
         }), arguments.callee)
       })
 
-      test(() => createHTMLSection('生命周期', undefined, undefined, 'h2'))
+      test(() => createHTMLSection('选项 / 数据', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
         const vue = createHTMLSection('vm.watch', new Vue({
@@ -291,6 +315,9 @@
       })
 
       test(() => createHTMLSection('实例方法 / 数据', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
         const vue = createHTMLSection('$set', new Vue({
@@ -404,7 +431,10 @@
         })
       })
 
-      test(() => createHTMLSection('实例方法 / 声明周期', undefined, undefined, 'h2'))
+      test(() => createHTMLSection('实例方法 / 生命周期', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
         createHTMLSection('$mount', undefined, arguments.callee)
@@ -482,6 +512,9 @@
       })
 
       test(() => createHTMLSection('真实世界案例', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
 
       test(function () {
         const vue = createHTMLSection('simple TODO app', new Vue({
