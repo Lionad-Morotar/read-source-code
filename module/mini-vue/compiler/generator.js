@@ -11,7 +11,10 @@ export default function generate (ast) {
   // * for debug
   // console.log('Generate: ', code.join(','))
 
-  if (showIfCondition) {
+  if (markIf) {
+    error('wrong match between :if and :else')
+  }
+  if (markShowIf) {
     error('wrong match between :show-if and :else')
   }
 
@@ -51,16 +54,17 @@ function genText (astNode) {
 }
 
 // handle v-if
+let markIf = null
 function handlePrefix (astNode) {
   const { attrs = {} } = astNode
   if (attrs.hasOwnProperty(':if')) {
-    astNode._markHandleIf = true
+    markIf = true
     const ifRes = attrs[':if']
     delete attrs[':if']
     return `(${ifRes})?(`
   }
   if (attrs.hasOwnProperty(':else')) {
-    if (astNode._markHandleIf) {
+    if (markIf) {
       return `):(`
     }
   } 
@@ -70,8 +74,8 @@ function handlePrefix (astNode) {
 function handlePostfix (astNode) {
   const { attrs = {} } = astNode
   if (attrs.hasOwnProperty(':else')) {
-    if (astNode._markHandleIf) {
-      delete astNode._markHandleIf
+    if (markIf) {
+      markIf = null
       delete attrs[':else']
       return `)`
     }
@@ -105,20 +109,20 @@ function processModel (astNode) {
 }
 
 // TODO ? move processData to parser/index.js
-let showIfCondition = null
+let markShowIf = null
 function processData (astNode) {
   const { attrs = {}, styles = {} } = astNode
 
   // handle v-show-if & v-else
   if (attrs.hasOwnProperty(':show-if')) {
-    showIfCondition = attrs[':show-if']
-    styles[':display'] = `${showIfCondition} ? 'none' : 'unset'`
+    markShowIf = attrs[':show-if']
+    styles[':display'] = `${markShowIf} ? 'none' : 'unset'`
     delete astNode.attrs[':show-if']
   }
   if (attrs.hasOwnProperty(':else')) {
-    styles[':display'] = `${showIfCondition} ? 'unset' : 'none'`
+    styles[':display'] = `${markShowIf} ? 'unset' : 'none'`
     delete astNode.attrs[':else']
-    showIfCondition = null
+    markShowIf = null
   }
   astNode.styles = styles
 }

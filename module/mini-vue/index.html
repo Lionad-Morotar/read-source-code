@@ -223,7 +223,7 @@
       // ************************************************************************* //
       // ************************************************************************* //
 
-      test(function () {
+      only(function () {
         const vue = createHTMLSection('v-if & v-else', new Vue({
           template: `
             <div>
@@ -533,7 +533,7 @@
       // ************************************************************************* //
       // ************************************************************************* //
 
-      only(function () {
+      test(function () {
         Vue.filter('prefix', function (value, prefix) {
           return prefix + value
         }).filter('double', function (value) {
