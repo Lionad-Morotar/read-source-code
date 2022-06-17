@@ -270,7 +270,7 @@
         }), arguments.callee)
       })
 
-      only(function () {
+      test(function () {
         const vue = createHTMLSection('v-model', new Vue({
           template: `
             <div>
@@ -526,6 +526,38 @@
             }
           }
         }), arguments.callee)
+      })
+
+      test(() => createHTMLSection('Global API', undefined, undefined, 'h2'))
+      // ************************************************************************* //
+      // ************************************************************************* //
+      // ************************************************************************* //
+
+      only(function () {
+        Vue.filter('prefix', function (value, prefix) {
+          return prefix + value
+        }).filter('double', function (value) {
+          return +value * 2
+        }).filter('multiple', function (value, arg = 1) {
+          return +value * arg
+        })
+
+        const vue = createHTMLSection('Vue.filter', new Vue({
+          template: `
+            <div :id="count | prefix('id_')">count: {{ count | double | multiple(3) }}</div>
+          `,
+          data () {
+            return {
+              count: 1
+            }
+          }
+        }), arguments.callee)
+
+        setInterval(() => vue.count += 1, 3000)
+        // to remove filters, run these code:
+        // delete vue.options.filters.prefix
+        // delete vue.options.filters.double
+        // delete vue.options.filters.multiple
       })
 
       test(() => createHTMLSection('真实世界案例', undefined, undefined, 'h2'))

@@ -3,8 +3,16 @@ import templateParser from './template-parser'
 import filterParser, { hasFilterExpression } from './filter-parser'
 
 export default function parse (template) {
+
+  templateParser.extend(nodeData => {
+    if (nodeData.expression) {
+      nodeData.expression = filterParser(nodeData.expression)
+    }
+    return nodeData
+  })
+
   return htmlParser(template, {
-    text: templateParser,
+    text: templateParser.parse,
     end (node) {
       // TODO CreateObject(x), getter => x.changed = true
       const { tagName, attrs = {}, events = {} } = node.data

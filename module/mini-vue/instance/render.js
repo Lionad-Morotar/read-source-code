@@ -2,11 +2,14 @@ import VNode from '../vdom/vnode.js'
 import nextTick from '../observer/next-tick.js'
 import { error, toString } from '../utils/index.js'
 
+let curVue = null
+
 export function initRender (vm) {
   vm._vnode = null
 }
 
 export default function renderMixin (Vue) {
+  curVue = Vue
   installRenderHelpers(Vue.prototype)
 
   Vue.prototype.$nextTick = nextTick
@@ -27,9 +30,10 @@ function installRenderHelpers (target) {
 }
 
 function renderInstanceFilter (name) {
-  const filters = this.$options.filters || {}
-  const filter = filters[name]
-  return filter.bind(this) || error(`no filter named ${name} find`)
+  const thisFilters = this.$options.filters || {}
+  const vueFilters = curVue.options.filters || {}
+  const filter = thisFilters[name] || vueFilters[name]
+  return filter ? filter.bind(this) : error(`filter ${name} is not exist`)
 }
 
 function createNode (tag, data, children) {

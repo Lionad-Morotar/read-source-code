@@ -1,3 +1,7 @@
+/**
+ * VNode interface
+ * @see https://github.com/vuejs/vue/blob/dev/src/core/vdom/vnode.js
+ */
 export default class VNode {
   constructor(tag, data, children, text, elm, context, componentOptions, asyncFactory) {
     // 节点或组件名称，如 div、svg
