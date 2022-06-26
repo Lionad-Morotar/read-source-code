@@ -1,24 +1,42 @@
-function _instanceof (left, right) {
-  const prototypeStored = right.prototype
-  while ((left = Object.getPrototypeOf(left))) {
-    if (left === prototypeStored) {
+/* Polyfills */
+/**
+ * Instanceof Operator
+ * @see https://tc39.es/ecma262/#sec-instanceofoperator
+ */
+function _instanceof (val, fn) {
+  const hasInstance = fn[Symbol.hasInstance]
+  if (hasInstance) {
+    return fn[Symbol.hasInstance](val)
+  }
+  const proto = fn.prototype
+  while ((val = Object.getPrototypeOf(val))) {
+    if (val === proto) {
       return true
     }
   }
   return false
 }
 
+/* Test Cases */
+
+const assert = require('assert')
+
 function God () {}
 function Person () {}
 function Programmer () {}
-function Duck () {}
 
 Programmer.prototype = new Person()
-Duck.prototype = new Programmer()
 
-const lionad = new Duck()
+const lionad = new Programmer()
 
-console.log(_instanceof(lionad, Person))
-console.log(_instanceof(lionad, Programmer))
-console.log(_instanceof(lionad, Duck))
-console.log(_instanceof(lionad, God))
+assert(_instanceof(lionad, Person) === true)
+assert(_instanceof(lionad, Programmer) === true)
+
+class GodMake {
+  static [Symbol.hasInstance] () {
+    return true
+  }
+}
+
+assert(_instanceof(lionad, God) === false)
+assert(_instanceof(lionad, GodMake) === true)
